@@ -1,5 +1,3 @@
-import builtins
-
 from types import GenericAlias
 from typing import Any, get_args
 
@@ -64,7 +62,7 @@ class Builder:
         for param_name, param_annotation in init_parameters.items():
             if isinstance(param_annotation, GenericAlias):
                 # TODO: remove hardcode (set, list)
-                if not issubclass(param_annotation.__origin__, (set, list)):
+                if not issubclass(param_annotation.__origin__, (set, list, type)):
                     raise RuntimeError(f"Unsupported dependency generic type for {cls}: {param_annotation.__origin__}")
 
                 registrations = []

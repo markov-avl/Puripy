@@ -36,7 +36,7 @@ def _extract_env(value: Any):
 
 def _make_inner_fields_extractable_recursively(cls: Callable):
     # noinspection PyUnresolvedReferences
-    cls.__extract__ = field_validator(*cls.__annotations__.keys())(_extract_env)
+    cls.__extract__ = field_validator(*cls.__annotations__.keys(), mode='before')(_extract_env)
     for attr, value in cls.__dict__.items():
         if inspect.isclass(value):
             _make_inner_fields_extractable_recursively(value)

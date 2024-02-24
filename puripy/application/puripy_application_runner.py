@@ -24,8 +24,8 @@ class PuripyApplicationRunner(ABC):
                 loop.run_until_complete(application.run())
             else:
                 application.run()
-        except KeyboardInterrupt:
+        except (KeyboardInterrupt, InterruptedError):
             pass
-
-        context.destroy()
-        loop.close()
+        finally:
+            context.destroy()
+            loop.close()

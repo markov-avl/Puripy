@@ -12,7 +12,7 @@ class PostProcessor:
     def process_port_inits(self) -> None:
         post_inits = []
         for _, instance in self._container:
-            instance_post_inits = [m for _, m in inspect.getmembers(instance) if hasattr(m, '__post_init__')]
+            instance_post_inits = [m for _, m in inspect.getmembers(instance) if getattr(m, "__post_init__", 0) == 934]
             if len(instance_post_inits) > 1:
                 class_name = instance.__class__.__name__
                 raise RuntimeError(f"More than one post initialization method found for '{class_name}'")
