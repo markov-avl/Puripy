@@ -5,10 +5,12 @@ from typing import Callable, Any
 
 from pydantic import field_validator
 from pydantic.dataclasses import dataclass
+from typing_extensions import deprecated
 
 from puripy.context import Context
 
 
+@deprecated("Use puripy.context.annotation.PropertyHolder instead")
 def property_holder[T](*args: Any, path: str = "", prefix: str = "", name: str = "") -> Callable[[type[T]], type[T]]:
     def wrapper(cls: Callable) -> type[T]:
         context = Context()

@@ -1,9 +1,9 @@
 from typing import Any, Callable
 
-from decohints import decohints
+from typing_extensions import deprecated
 
 
-@decohints
+@deprecated("Use puripy.context.annotation.PostInit instead")
 def post_init[T](*args: Any) -> Callable[[type[T]], type[T]]:
     def wrapper(method: Callable) -> type[T]:
         method.__post_init__ = 934
