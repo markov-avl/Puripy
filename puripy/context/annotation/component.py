@@ -7,13 +7,13 @@ from .context_annotation import ContextAnnotation
 
 
 @ClassDecorator
-class Component[Callable](ContextAnnotation):
+class Component[T: type](ContextAnnotation):
 
     def __init__(self, name: str = ""):
         super().__init__()
         self._name = name
 
-    def __call__(self, decoratable):
+    def __call__(self, decoratable: T) -> T:
         if ComponentUtility.has_string_annotations(decoratable):
             raise RuntimeError(f"Component {decoratable} has string-annotated dependencies. Is 'annotations' imported?")
         if ComponentUtility.has_empty_annotations(decoratable):

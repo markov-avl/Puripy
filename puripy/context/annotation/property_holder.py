@@ -13,7 +13,7 @@ from .context_annotation import ContextAnnotation
 
 
 @ClassDecorator
-class PropertyHolder[Callable](ContextAnnotation):
+class PropertyHolder[T: type](ContextAnnotation):
 
     @KeywordsOnly
     def __init__(self, path: str = "", prefix: str = "", name: str = ""):
@@ -22,7 +22,7 @@ class PropertyHolder[Callable](ContextAnnotation):
         self._prefix = prefix
         self._name = name
 
-    def __call__(self, decoratable):
+    def __call__(self, decoratable: T) -> T:
         context = Context()
         context.registrar.register_property_holder(decoratable, self._path, self._prefix, self._name)
 
@@ -32,14 +32,14 @@ class PropertyHolder[Callable](ContextAnnotation):
         # noinspection PyTypeChecker
         return dataclass(decoratable)
 
-    def _make_inner_fields_extractable_recursively(self, decoratable: Callable):
+    def _make_inner_fields_extractable_recursively(self, decoratable: T) -> None:
         # noinspection PyUnresolvedReferences
         decoratable.__extract__ = field_validator(*decoratable.__annotations__.keys(), mode='before')(self._extract_env)
         for attr, value in decoratable.__dict__.items():
             if inspect.isclass(value):
                 self._make_inner_fields_extractable_recursively(value)
 
-    def _make_inner_classes_as_dataclasses_recursively(self, decoratable: Callable) -> None:
+    def _make_inner_classes_as_dataclasses_recursively(self, decoratable: T) -> None:
         for attr, value in decoratable.__dict__.items():
             if inspect.isclass(value):
                 self._make_inner_classes_as_dataclasses_recursively(value)
