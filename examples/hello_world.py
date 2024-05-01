@@ -3,7 +3,7 @@ from puripy import PuripyApplication, PuripyApplicationRunner
 
 class App(PuripyApplication):
 
-    async def run(self):
+    async def run(self) -> None:
         print("Hello world!")
 
 

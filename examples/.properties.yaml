@@ -1,0 +1,7 @@
+example:
+  simple:
+    python_home: /usr/bin/python3
+  env:
+    python_home: ${PYTHONHOME}
+  env-or-default:
+    python_home: ${PYTHONHOME:/usr/bin/python3}

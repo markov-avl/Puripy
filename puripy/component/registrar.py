@@ -10,14 +10,14 @@ class Registrar:
     def __init__[T](self):
         self._registry: dict[type[T], list[T]] = {}
 
-    def register_component[T](self, cls: type[T], name: str = "") -> None:
+    def register_component[T](self, cls: T, name: str = "") -> None:
         registration = ComponentRegistration(
             type=cls,
             name=ComponentUtility.get_name(cls, name)
         )
         self._register(registration)
 
-    def register_property_holder[T](self, cls: type[T], path: str, prefix: str, name: str = "") -> None:
+    def register_property_holder[T](self, cls: T, path: str, prefix: str, name: str = "") -> None:
         registration = PropertyHolderRegistration(
             type=cls,
             name=ComponentUtility.get_name(cls, name),

@@ -3,6 +3,6 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Registration[T](ABC):
-    type: type[T]
+class Registration[T: type](ABC):
+    type: T
     name: str

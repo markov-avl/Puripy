@@ -12,4 +12,4 @@ class SourceParser:
         for parser in self._parsers:
             if parser.is_parseable(source):
                 return parser.parse(source)
-        raise RuntimeError(f"Property source is unsupported: {source}")
+        raise RuntimeError(f"Property source {source} is unsupported")
