@@ -1,17 +1,20 @@
 import inspect
+from typing import final
 
 from puripy.context import Context
 from puripy.utility import ComponentUtility
-from .decorator import ClassDecorator
-from .context_annotation import ContextAnnotation
+from .decorator import classdecorator
+from .contextannotation import ContextAnnotation
 
 
-@ClassDecorator
-class Component[T: type](ContextAnnotation):
+# noinspection PyPep8Naming
+@final
+@classdecorator
+class component[T: type](ContextAnnotation):
 
     def __init__(self, name: str = ""):
         super().__init__()
-        self._name = name
+        self.__name = name
 
     def __call__(self, decoratable: T) -> T:
         if ComponentUtility.has_string_annotations(decoratable):
@@ -23,6 +26,6 @@ class Component[T: type](ContextAnnotation):
             raise RuntimeError("Abstract class cannot be a component")
 
         context = Context()
-        context.registrar.register_component(decoratable, self._name)
+        context.registrar.register_component(decoratable, self.__name)
 
         return decoratable

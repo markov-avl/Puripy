@@ -7,7 +7,7 @@ from puripy.context import Context
 from puripy.utility import ComponentUtility
 
 
-@deprecated("Use puripy.context.annotation.Component instead")
+@deprecated("Use puripy.context.annotation.component instead")
 def component[T](*args: type[T] | Any, name: str = "") -> type[T]:
     def wrapper(cls: type[T]) -> type[T]:
         if ComponentUtility.has_string_annotations(cls):
