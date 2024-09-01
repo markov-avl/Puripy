@@ -12,14 +12,14 @@ class keywordsonly:
 
     def __new__[C: Callable](cls, function: C) -> C:
         def wrapper(*args, **kwargs):
-            if cls.__should_has_first_positional_argument(args, function):
+            if cls.__should_have_first_positional_argument(args, function):
                 return function(args[0], **kwargs)
             return function(**kwargs)
 
         return wrapper
 
     @classmethod
-    def __should_has_first_positional_argument(cls, args: tuple, f: Callable) -> bool:
+    def __should_have_first_positional_argument(cls, args: tuple, f: Callable) -> bool:
         if not args or (c := cls.__get_class_defined_method(f)) is None:
             return False
 
