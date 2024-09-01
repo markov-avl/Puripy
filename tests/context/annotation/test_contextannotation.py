@@ -89,12 +89,12 @@ class TestContextAnnotation(TestCase):
     @patch(VALIDATE_DECORATABLE_PATH)
     def test_default_argued_init_with_kw_arg(self, validate_decoratable_mock: MagicMock):
         # act
-        annotation = self.ArguedAnnotation(arg="value")
+        annotation = self.DefaultArguedAnnotation(arg="value")
         test_class = annotation(self.TestClass)
 
         # assert
         validate_decoratable_mock.assert_not_called()
-        self.assertEqual(self.ArguedAnnotation, type(annotation))
+        self.assertEqual(self.DefaultArguedAnnotation, type(annotation))
         self.assertEqual(self.TestClass, test_class)
         self.assertEqual("value", annotation.arg)
 
