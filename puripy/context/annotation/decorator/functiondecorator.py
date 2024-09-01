@@ -1,10 +1,12 @@
-from typing import Callable
+from typing import Callable, final
 
 from puripy.context.metadata import DecoratorMetadata
 from puripy.utility import MetadataUtility
 
 
-class FunctionDecorator:
+# noinspection PyPep8Naming
+@final
+class functiondecorator:
     """
     Adds metadata to make it clear that the decorator is for functions.
     """

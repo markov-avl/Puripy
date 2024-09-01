@@ -1,3 +1,3 @@
-from .class_decorator import ClassDecorator
-from .function_decorator import FunctionDecorator
-from .keywords_only import KeywordsOnly
+from .classdecorator import classdecorator
+from .functiondecorator import functiondecorator
+from .keywordsonly import keywordsonly
