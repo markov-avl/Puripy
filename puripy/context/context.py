@@ -50,13 +50,13 @@ class Context:
         assembler.assemble()
 
         post_processor = PostProcessor(self._container)
-        post_processor.process_port_inits()
+        post_processor.process_after_inits()
 
         return self._container.get_by_type(application_type)[0]
 
     def destroy(self) -> None:
         pre_processor = PreProcessor(self._container)
-        pre_processor.process_pre_dels()
+        pre_processor.process_before_dels()
 
     def _register_internals(self) -> None:
         self._registrar.register_bone(JsonPropertyParser)

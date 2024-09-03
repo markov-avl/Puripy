@@ -1,5 +1,5 @@
 from puripy import PuripyApplication, PuripyApplicationRunner
-from puripy.context.annotation import postinit, predel
+from puripy.context.annotation import afterinit, beforedel
 
 
 class App(PuripyApplication):
@@ -13,12 +13,12 @@ class App(PuripyApplication):
     def run(self) -> None:
         print("Run call")
 
-    @postinit
-    def post_init(self) -> None:
+    @afterinit
+    def after_init(self) -> None:
         print("After __init__ call")
 
-    @predel
-    def pre_del(self) -> None:
+    @beforedel
+    def before_del(self) -> None:
         print("Before __del__ call")
 
 

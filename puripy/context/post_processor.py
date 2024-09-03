@@ -9,18 +9,18 @@ class PostProcessor:
     def __init__(self, container: Container):
         self._container = container
 
-    def process_port_inits(self) -> None:
-        post_inits = []
+    def process_after_inits(self) -> None:
+        after_inits = []
         for _, instance in self._container:
-            instance_post_inits = [m for _, m in inspect.getmembers(instance) if getattr(m, "__post_init__", 0) == 934]
-            if len(instance_post_inits) > 1:
+            instance_after_inits = [m for _, m in inspect.getmembers(instance) if hasattr(m, "__afterinit__")]
+            if len(instance_after_inits) > 1:
                 class_name = instance.__class__.__name__
-                raise RuntimeError(f"More than one post initialization method found for '{class_name}'")
-            if instance_post_inits:
-                post_inits.append(instance_post_inits[0])
+                raise RuntimeError(f"More than one after initialization method found for '{class_name}'")
+            if instance_after_inits:
+                after_inits.append(instance_after_inits[0])
 
-        for post_init in post_inits:
-            if inspect.iscoroutinefunction(post_init):
-                asyncio.get_event_loop().run_until_complete(post_init())
+        for after_init in after_inits:
+            if inspect.iscoroutinefunction(after_init):
+                asyncio.get_event_loop().run_until_complete(after_init())
             else:
-                post_init()
+                after_init()

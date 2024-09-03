@@ -1,9 +1,9 @@
 from unittest import TestCase
 
-from puripy.context.annotation import postinit
+from puripy.context.annotation import afterinit
 
 
-class TestPostinit(TestCase):
+class TestAfterinit(TestCase):
     @staticmethod
     def function():
         pass
@@ -11,7 +11,7 @@ class TestPostinit(TestCase):
     def test_no_args_decoration(self):
         # act
         # noinspection PyTypeChecker
-        test_function = postinit()(self.function)
+        test_function = afterinit()(self.function)
 
         # assert
         # TODO: assert inside __call__ calls
@@ -19,7 +19,7 @@ class TestPostinit(TestCase):
 
     def test_no_args_uncalled_decoration(self):
         # act
-        test_function = postinit(self.function)
+        test_function = afterinit(self.function)
 
         # assert
         # TODO: assert inside __call__ calls
