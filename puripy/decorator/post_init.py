@@ -3,10 +3,10 @@ from typing import Any, Callable
 from typing_extensions import deprecated
 
 
-@deprecated("Use puripy.context.annotation.postinit instead")
+@deprecated("Use puripy.context.annotation.afterinit instead")
 def post_init[T](*args: Any) -> Callable[[type[T]], type[T]]:
     def wrapper(method: Callable) -> type[T]:
-        method.__post_init__ = 934
+        method.__afterinit__ = True
 
         return method
 

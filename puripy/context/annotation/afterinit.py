@@ -8,9 +8,9 @@ from .context_annotation import ContextAnnotation
 # noinspection PyPep8Naming
 @final
 @functiondecorator
-class postinit[F: FunctionType](ContextAnnotation):
+class afterinit[F: FunctionType](ContextAnnotation):
 
     def __call__(self, decoratable: F) -> F:
-        decoratable.__post_init__ = 934
+        decoratable.__afterinit__ = True
 
         return decoratable
