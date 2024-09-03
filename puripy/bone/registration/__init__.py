@@ -1,4 +1,4 @@
 from .registration import Registration
 
-from .component_registration import ComponentRegistration
+from .bone_registration import BoneRegistration
 from .properties_registration import PropertiesRegistration

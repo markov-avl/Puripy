@@ -7,7 +7,7 @@ from .reflection_utils import ReflectionUtils
 
 
 @final
-class ComponentUtils:
+class BoneUtils:
 
     @classmethod
     def get_name(cls, obj: Any, name: str = "") -> str:

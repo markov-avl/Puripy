@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any
 
-from puripy.component.registration import PropertiesRegistration, ComponentRegistration
+from puripy.bone.registration import PropertiesRegistration, BoneRegistration
 
 from .dependency import Dependency
 
@@ -10,4 +10,4 @@ from .dependency import Dependency
 class GenericDependency[T](Dependency):
     param_name: str
     generic_type: type[Any]
-    registrations: list[PropertiesRegistration[T] | ComponentRegistration[T]]
+    registrations: list[PropertiesRegistration[T] | BoneRegistration[T]]

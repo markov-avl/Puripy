@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from puripy.component import Container, Registrar, Builder
+from puripy.bone import Container, Registrar, Builder
 from puripy.property import SourceParser
 from puripy.property.parser import JsonPropertyParser, YamlPropertyParser
 
@@ -44,7 +44,7 @@ class Context:
 
     def initialize[T](self, application_type: type[T]) -> T:
         self._register_internals()
-        self._registrar.register_component(application_type)
+        self._registrar.register_bone(application_type)
 
         assembler = Assembler(self._builder)
         assembler.assemble()
@@ -59,6 +59,6 @@ class Context:
         pre_processor.process_pre_dels()
 
     def _register_internals(self) -> None:
-        self._registrar.register_component(JsonPropertyParser)
-        self._registrar.register_component(YamlPropertyParser)
-        self._registrar.register_component(SourceParser)
+        self._registrar.register_bone(JsonPropertyParser)
+        self._registrar.register_bone(YamlPropertyParser)
+        self._registrar.register_bone(SourceParser)

@@ -1,24 +1,24 @@
 from unittest import TestCase
 
-from puripy.context.annotation import component
+from puripy.context.annotation import bone
 
 
-class TestComponent(TestCase):
+class TestBone(TestCase):
     class TestClass:
         pass
 
     def test_no_args_decoration(self):
         # act
-        test_class = component()(self.TestClass)
+        test_class = bone()(self.TestClass)
 
         # assert
         # TODO: assert inside __call__ calls
         self.assertEqual(self.TestClass, test_class)
 
-    def test_no_args_parentless_decoration(self):
+    def test_no_args_uncalled_decoration(self):
         # act
         # noinspection PyTypeChecker
-        test_class = component(self.TestClass)
+        test_class = bone(self.TestClass)
 
         # assert
         # TODO: assert inside __call__ calls
@@ -26,7 +26,7 @@ class TestComponent(TestCase):
 
     def test_pos_args_decoration(self):
         # act
-        test_class = component("name")(self.TestClass)
+        test_class = bone("name")(self.TestClass)
 
         # assert
         # TODO: assert inside __call__ calls
@@ -35,7 +35,7 @@ class TestComponent(TestCase):
 
     def test_kw_args_decoration(self):
         # act
-        test_class = component(name="name")(self.TestClass)
+        test_class = bone(name="name")(self.TestClass)
 
         # assert
         # TODO: assert inside __call__ calls

@@ -3,7 +3,7 @@ from unittest import TestCase
 from puripy.context.annotation import postinit
 
 
-class TestComponent(TestCase):
+class TestPostinit(TestCase):
     @staticmethod
     def function():
         pass
@@ -17,7 +17,7 @@ class TestComponent(TestCase):
         # TODO: assert inside __call__ calls
         self.assertEqual(self.function, test_function)
 
-    def test_no_args_parentless_decoration(self):
+    def test_no_args_uncalled_decoration(self):
         # act
         test_function = postinit(self.function)
 
