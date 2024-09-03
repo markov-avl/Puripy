@@ -2,7 +2,7 @@ import inspect
 from typing import final
 
 from puripy.context import Context
-from puripy.utility import ComponentUtility
+from puripy.utils import ComponentUtils
 from .decorator import classdecorator
 from .context_annotation import ContextAnnotation
 
@@ -17,9 +17,9 @@ class component[T: type](ContextAnnotation):
         self.__name = name
 
     def __call__(self, decoratable: T) -> T:
-        if ComponentUtility.has_string_annotations(decoratable):
+        if ComponentUtils.has_string_annotations(decoratable):
             raise RuntimeError(f"Component {decoratable} has string-annotated dependencies. Is 'annotations' imported?")
-        if ComponentUtility.has_empty_annotations(decoratable):
+        if ComponentUtils.has_empty_annotations(decoratable):
             raise RuntimeError(f"Component {decoratable} has unknown-type dependencies. Annotate all params.")
 
         if inspect.isabstract(decoratable):

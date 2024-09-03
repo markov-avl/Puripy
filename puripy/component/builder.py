@@ -1,7 +1,7 @@
 from types import GenericAlias
 from typing import Any, get_args
 
-from puripy.utility import ResourceUtility, ReflectionUtility
+from puripy.utils import ResourceUtility, ReflectionUtils
 from puripy.property import SourceParser
 
 from .container import Container
@@ -57,7 +57,7 @@ class Builder:
 
     def _get_type_dependencies(self, cls: type[Any]) -> list[_Dependency]:
         dependencies = []
-        init_parameters = {param.name: param.annotation for param in ReflectionUtility.params_of(cls)}
+        init_parameters = {param.name: param.annotation for param in ReflectionUtils.params_of(cls)}
 
         for param_name, param_annotation in init_parameters.items():
             if isinstance(param_annotation, GenericAlias):

@@ -1,7 +1,7 @@
 from typing import Callable, final
 
 from puripy.context.metadata import DecoratorMetadata
-from puripy.utility import MetadataUtility
+from puripy.utils import MetadataUtils
 
 
 # noinspection PyPep8Naming
@@ -13,6 +13,6 @@ class functiondecorator:
 
     def __new__[C: Callable](cls, decoratable: C) -> C:
         metadata = DecoratorMetadata.of_function()
-        MetadataUtility.append_metadata(decoratable, metadata)
+        MetadataUtils.append_metadata(decoratable, metadata)
 
         return decoratable

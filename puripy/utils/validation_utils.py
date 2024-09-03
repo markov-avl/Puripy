@@ -2,25 +2,23 @@ import inspect
 from dataclasses import dataclass
 from typing import final, Any, Callable
 
-from puripy.utility import MetadataUtility
-
-
-@dataclass
-class _DecoratableValidation:
-    type: str
-    validator: Callable[[Any], bool]
-    validate: bool
+from puripy.utils import MetadataUtils
 
 
 @final
-class ValidationUtility:
+class ValidationUtils:
+    @dataclass
+    class DecoratableValidation:
+        type: str
+        validator: Callable[[Any], bool]
+        validate: bool
 
     @classmethod
     def validate_decoratable(cls, annotation: Any, decoratable: Callable) -> None:
-        decoratable_validations = [
-            _DecoratableValidation("class", inspect.isclass, MetadataUtility.is_class_decorator(annotation)),
-            _DecoratableValidation("function", inspect.isfunction, MetadataUtility.is_function_decorator(annotation))
-        ]
+        decoratable_validations = (
+            cls.DecoratableValidation("class", inspect.isclass, MetadataUtils.is_class_decorator(annotation)),
+            cls.DecoratableValidation("function", inspect.isfunction, MetadataUtils.is_function_decorator(annotation))
+        )
 
         if not any(v.validator(decoratable) for v in decoratable_validations if v.validate):
             valid_types = ", ".join(v.type for v in decoratable_validations if v.validate)

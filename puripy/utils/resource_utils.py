@@ -7,17 +7,17 @@ from typing import final
 class ResourceUtility:
     PROPERTY_FILE_PATTERN: str = "properties.*"
 
-    @staticmethod
-    def find_property_files() -> list[Path]:
+    @classmethod
+    def find_property_files(cls) -> list[Path]:
         root = Path('.')
-        return list(root.glob(ResourceUtility.PROPERTY_FILE_PATTERN))
+        return list(root.glob(cls.PROPERTY_FILE_PATTERN))
 
-    @staticmethod
-    def get_property_file() -> Path:
+    @classmethod
+    def get_property_file(cls) -> Path:
         """
         :exception RuntimeError: If no default property file found
         """
-        paths = ResourceUtility.find_property_files()
+        paths = cls.find_property_files()
         if not paths:
             raise RuntimeError(f"No default property file found")
         if len(paths) > 1:

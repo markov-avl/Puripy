@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC
 from typing import Callable
 
-from puripy.utility import ValidationUtility
+from puripy.utils import ValidationUtils
 
 
 class ContextAnnotation[C: Callable](ABC):
@@ -13,7 +13,7 @@ class ContextAnnotation[C: Callable](ABC):
         annotation.__init__(**kwargs)
 
         if args and callable(args[0]):
-            ValidationUtility.validate_decoratable(annotation, args[0])
+            ValidationUtils.validate_decoratable(annotation, args[0])
             return annotation(args[0])
 
         return annotation

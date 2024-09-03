@@ -1,2 +1,2 @@
-# ValidationUtility
-VALIDATION_UTILITY_VALIDATE_DECORATABLE = "puripy.utility.ValidationUtility.validate_decoratable"
+# ValidationUtils
+VALIDATION_UTILS_VALIDATE_DECORATABLE = "puripy.utils.ValidationUtils.validate_decoratable"
