@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
+from abc import ABC
 from typing import Callable
 
 from puripy.utility import ValidationUtility
@@ -18,9 +18,9 @@ class ContextAnnotation[C: Callable](ABC):
 
         return annotation
 
+    # *args should remain due PyCharm constructor argument list checkers
     def __init__(self, *args, **kwargs):
         pass
 
-    @abstractmethod
     def __call__(self, decoratable: C) -> C:
-        ...
+        return decoratable

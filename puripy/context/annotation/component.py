@@ -4,7 +4,7 @@ from typing import final
 from puripy.context import Context
 from puripy.utility import ComponentUtility
 from .decorator import classdecorator
-from .contextannotation import ContextAnnotation
+from .context_annotation import ContextAnnotation
 
 
 # noinspection PyPep8Naming

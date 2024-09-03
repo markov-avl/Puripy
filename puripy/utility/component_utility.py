@@ -1,5 +1,4 @@
 import inspect
-from inspect import _empty
 from typing import final, Any, Callable
 
 import inflection
@@ -25,4 +24,4 @@ class ComponentUtility:
 
     @staticmethod
     def has_empty_annotations(obj: Callable) -> bool:
-        return any(issubclass(param.annotation, _empty) for param in ReflectionUtility.params_of(obj))
+        return any(issubclass(param.annotation, inspect.Parameter.empty) for param in ReflectionUtility.params_of(obj))
