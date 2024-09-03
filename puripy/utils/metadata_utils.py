@@ -4,7 +4,7 @@ from puripy.context.metadata import Metadata, DecoratorMetadata
 
 
 @final
-class MetadataUtility:
+class MetadataUtils:
     ATTRIBUTE_NAME = "__puripy__"
 
     @classmethod

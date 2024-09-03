@@ -1,6 +1,6 @@
 from itertools import chain
 
-from puripy.utility import ComponentUtility
+from puripy.utils import ComponentUtils
 
 from .registration import ComponentRegistration, PropertyHolderRegistration
 
@@ -13,14 +13,14 @@ class Registrar:
     def register_component[T](self, cls: T, name: str = "") -> None:
         registration = ComponentRegistration(
             type=cls,
-            name=ComponentUtility.get_name(cls, name)
+            name=ComponentUtils.get_name(cls, name)
         )
         self._register(registration)
 
     def register_property_holder[T](self, cls: T, path: str, prefix: str, name: str = "") -> None:
         registration = PropertyHolderRegistration(
             type=cls,
-            name=ComponentUtility.get_name(cls, name),
+            name=ComponentUtils.get_name(cls, name),
             path=path,
             prefix=prefix
         )
