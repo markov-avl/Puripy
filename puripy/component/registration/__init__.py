@@ -1,4 +1,4 @@
 from .registration import Registration
 
 from .component_registration import ComponentRegistration
-from .property_holder_registration import PropertyHolderRegistration
+from .properties_registration import PropertiesRegistration

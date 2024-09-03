@@ -1,8 +1,8 @@
 from puripy import PuripyApplication, PuripyApplicationRunner
-from puripy.context.annotation import propertyholder
+from puripy.context.annotation import properties
 
 
-@propertyholder(path='.properties.yaml', prefix='example.simple')
+@properties(path='.properties.yaml', prefix='example.simple')
 class PythonEnvironmentVariables:
     python_home: str
 

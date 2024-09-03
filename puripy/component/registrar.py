@@ -2,7 +2,7 @@ from itertools import chain
 
 from puripy.utils import ComponentUtils
 
-from .registration import ComponentRegistration, PropertyHolderRegistration
+from .registration import ComponentRegistration, PropertiesRegistration
 
 
 class Registrar:
@@ -17,8 +17,8 @@ class Registrar:
         )
         self._register(registration)
 
-    def register_property_holder[T](self, cls: T, path: str, prefix: str, name: str = "") -> None:
-        registration = PropertyHolderRegistration(
+    def register_properties[T](self, cls: T, path: str, prefix: str, name: str = "") -> None:
+        registration = PropertiesRegistration(
             type=cls,
             name=ComponentUtils.get_name(cls, name),
             path=path,
@@ -29,8 +29,8 @@ class Registrar:
     def get_components(self) -> list[ComponentRegistration]:
         return self._registry[ComponentRegistration]
 
-    def get_property_holders(self) -> list[PropertyHolderRegistration]:
-        return self._registry[PropertyHolderRegistration]
+    def get_properties(self) -> list[PropertiesRegistration]:
+        return self._registry[PropertiesRegistration]
 
     def _register[T](self, registration: T) -> None:
         if registration.__class__ not in self._registry:

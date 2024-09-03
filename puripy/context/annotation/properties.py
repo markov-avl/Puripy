@@ -15,7 +15,7 @@ from .context_annotation import ContextAnnotation
 # noinspection PyPep8Naming
 @final
 @classdecorator
-class propertyholder[T: type](ContextAnnotation):
+class properties[T: type](ContextAnnotation):
 
     @keywordsonly
     def __init__(self, path: str = "", prefix: str = "", name: str = ""):
@@ -26,7 +26,7 @@ class propertyholder[T: type](ContextAnnotation):
 
     def __call__(self, decoratable: T) -> T:
         context = Context()
-        context.registrar.register_property_holder(decoratable, self.__path, self.__prefix, self.__name)
+        context.registrar.register_properties(decoratable, self.__path, self.__prefix, self.__name)
 
         self.__make_inner_fields_extractable_recursively(decoratable)
         self.__make_inner_classes_as_dataclasses_recursively(decoratable)
