@@ -4,6 +4,6 @@ from .registration import Registration
 
 
 @dataclass
-class PropertyHolderRegistration[T](Registration[T]):
+class PropertiesRegistration[T](Registration[T]):
     path: str
     prefix: str

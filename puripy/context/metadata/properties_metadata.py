@@ -4,7 +4,7 @@ from .metadata import Metadata
 
 
 @dataclass
-class PropertyHolderMetadata(Metadata):
+class PropertiesMetadata(Metadata):
     name: str
     path: str
     prefix: str

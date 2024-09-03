@@ -10,11 +10,11 @@ from typing_extensions import deprecated
 from puripy.context import Context
 
 
-@deprecated("Use puripy.context.annotation.propertyholder instead")
+@deprecated("Use puripy.context.annotation.properties instead")
 def property_holder[T](*args: Any, path: str = "", prefix: str = "", name: str = "") -> Callable[[type[T]], type[T]]:
     def wrapper(cls: Callable) -> type[T]:
         context = Context()
-        context.registrar.register_property_holder(cls, path, prefix, name)
+        context.registrar.register_properties(cls, path, prefix, name)
 
         _make_inner_fields_extractable_recursively(cls)
         _make_inner_classes_as_dataclasses_recursively(cls)

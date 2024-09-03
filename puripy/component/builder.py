@@ -7,10 +7,10 @@ from puripy.property import SourceParser
 from .container import Container
 from .dependency import DirectDependency, GenericDependency, IndirectDependency
 from .registrar import Registrar
-from .registration import PropertyHolderRegistration, ComponentRegistration
+from .registration import PropertiesRegistration, ComponentRegistration
 
 _Dependency = DirectDependency | GenericDependency | IndirectDependency
-_Registration = PropertyHolderRegistration | ComponentRegistration
+_Registration = PropertiesRegistration | ComponentRegistration
 
 
 class Builder:
@@ -36,8 +36,8 @@ class Builder:
                 for dependency_registration in dependency.registrations:
                     self._construct_and_save(dependency_registration)
 
-        if isinstance(registration, PropertyHolderRegistration):
-            instance = self._property_holder(registration)
+        if isinstance(registration, PropertiesRegistration):
+            instance = self._properties(registration)
         elif isinstance(registration, ComponentRegistration):
             instance = self._component(registration, dependencies)
         else:
@@ -46,7 +46,7 @@ class Builder:
         self._container.add_instance(registration.name, instance)
 
     def _get_registration_dependencies(self, registration: _Registration) -> list[_Dependency]:
-        if isinstance(registration, PropertyHolderRegistration):
+        if isinstance(registration, PropertiesRegistration):
             dependencies = [IndirectDependency(
                 registration=next(filter(lambda r: issubclass(r.type, SourceParser), self._registrar.get_components()))
             )]
@@ -101,7 +101,7 @@ class Builder:
 
         return dependencies
 
-    def _property_holder[T](self, registration: PropertyHolderRegistration[T]) -> T:
+    def _properties[T](self, registration: PropertiesRegistration[T]) -> T:
         source = registration.path if registration.path else ResourceUtils.get_property_file().name
         source_parser = self._container.get_by_type(SourceParser)[0]
         properties = source_parser.parse(source)
