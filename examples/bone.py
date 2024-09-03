@@ -1,8 +1,8 @@
 from puripy import PuripyApplication, PuripyApplicationRunner
-from puripy.context.annotation import component
+from puripy.context.annotation import bone
 
 
-@component
+@bone
 class ValueHolder:
 
     def __init__(self):

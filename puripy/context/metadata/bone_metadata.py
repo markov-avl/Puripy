@@ -4,5 +4,5 @@ from .metadata import Metadata
 
 
 @dataclass
-class ComponentMetadata(Metadata):
+class BoneMetadata(Metadata):
     name: str

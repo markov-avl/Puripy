@@ -1,4 +1,4 @@
-from .component_utils import ComponentUtils
+from .bone_utils import BoneUtils
 from .metadata_utils import MetadataUtils
 from .reflection_utils import ReflectionUtils
 from .resource_utils import ResourceUtils

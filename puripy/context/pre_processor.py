@@ -1,7 +1,7 @@
 import asyncio
 import inspect
 
-from puripy.component import Container
+from puripy.bone import Container
 
 
 class PreProcessor:
