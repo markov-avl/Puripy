@@ -2,7 +2,7 @@ from types import FunctionType
 from typing import final
 
 from .decorator import functiondecorator
-from .contextannotation import ContextAnnotation
+from .context_annotation import ContextAnnotation
 
 
 # noinspection PyPep8Naming

@@ -3,11 +3,10 @@ from unittest import TestCase
 from unittest.mock import patch, MagicMock
 
 from puripy.context.annotation import ContextAnnotation
+from tests.patch_mocks import VALIDATION_UTILITY_VALIDATE_DECORATABLE
 
 
 class TestContextAnnotation(TestCase):
-    VALIDATE_DECORATABLE_PATH = "puripy.utility.ValidationUtility.validate_decoratable"
-
     class TestClass:
         pass
 
@@ -26,7 +25,7 @@ class TestContextAnnotation(TestCase):
             super().__init__()
             self.arg = arg
 
-    @patch(VALIDATE_DECORATABLE_PATH)
+    @patch(VALIDATION_UTILITY_VALIDATE_DECORATABLE)
     def test_no_args_init(self, validate_decoratable_mock: MagicMock):
         # act
         annotation = self.NoArgsAnnotation()
@@ -37,7 +36,7 @@ class TestContextAnnotation(TestCase):
         self.assertEqual(self.NoArgsAnnotation, type(annotation))
         self.assertEqual(self.TestClass, test_class)
 
-    @patch(VALIDATE_DECORATABLE_PATH)
+    @patch(VALIDATION_UTILITY_VALIDATE_DECORATABLE)
     def test_no_args_init_with_callable(self, validate_decoratable_mock: MagicMock):
         # act
         # noinspection PyArgumentList
@@ -54,7 +53,7 @@ class TestContextAnnotation(TestCase):
         # act & assert
         self.assertRaisesRegex(TypeError, exception_message_regex, lambda: self.ArguedAnnotation("value"))
 
-    @patch(VALIDATE_DECORATABLE_PATH)
+    @patch(VALIDATION_UTILITY_VALIDATE_DECORATABLE)
     def test_argued_init_with_kw_arg(self, validate_decoratable_mock: MagicMock):
         # act
         annotation = self.ArguedAnnotation(arg="value")
@@ -74,7 +73,7 @@ class TestContextAnnotation(TestCase):
         # noinspection PyTypeChecker
         self.assertRaisesRegex(TypeError, exception_message_regex, lambda: self.ArguedAnnotation(self.TestClass))
 
-    @patch(VALIDATE_DECORATABLE_PATH)
+    @patch(VALIDATION_UTILITY_VALIDATE_DECORATABLE)
     def test_default_argued_init_with_pos_arg(self, validate_decoratable_mock: MagicMock):
         # act
         annotation = self.DefaultArguedAnnotation()
@@ -86,7 +85,7 @@ class TestContextAnnotation(TestCase):
         self.assertEqual(self.TestClass, test_class)
         self.assertEqual(annotation.arg, "default value")
 
-    @patch(VALIDATE_DECORATABLE_PATH)
+    @patch(VALIDATION_UTILITY_VALIDATE_DECORATABLE)
     def test_default_argued_init_with_kw_arg(self, validate_decoratable_mock: MagicMock):
         # act
         annotation = self.DefaultArguedAnnotation(arg="value")
@@ -98,7 +97,7 @@ class TestContextAnnotation(TestCase):
         self.assertEqual(self.TestClass, test_class)
         self.assertEqual("value", annotation.arg)
 
-    @patch(VALIDATE_DECORATABLE_PATH)
+    @patch(VALIDATION_UTILITY_VALIDATE_DECORATABLE)
     def test_default_argued_init_with_callable(self, validate_decoratable_mock: MagicMock):
         # act
         # noinspection PyTypeChecker
