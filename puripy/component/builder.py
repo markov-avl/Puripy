@@ -1,7 +1,7 @@
 from types import GenericAlias
 from typing import Any, get_args
 
-from puripy.utils import ResourceUtility, ReflectionUtils
+from puripy.utils import ResourceUtils, ReflectionUtils
 from puripy.property import SourceParser
 
 from .container import Container
@@ -102,7 +102,7 @@ class Builder:
         return dependencies
 
     def _property_holder[T](self, registration: PropertyHolderRegistration[T]) -> T:
-        source = registration.path if registration.path else ResourceUtility.get_property_file().name
+        source = registration.path if registration.path else ResourceUtils.get_property_file().name
         source_parser = self._container.get_by_type(SourceParser)[0]
         properties = source_parser.parse(source)
 

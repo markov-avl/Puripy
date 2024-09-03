@@ -4,7 +4,7 @@ from typing import final
 
 
 @final
-class ResourceUtility:
+class ResourceUtils:
     PROPERTY_FILE_PATTERN: str = "properties.*"
 
     @classmethod
