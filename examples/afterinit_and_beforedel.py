@@ -14,11 +14,11 @@ class App(PuripyApplication):
         print("Run call")
 
     @afterinit
-    def after_init(self) -> None:
+    async def after_init(self) -> None:
         print("After __init__ call")
 
     @beforedel
-    def before_del(self) -> None:
+    async def before_del(self) -> None:
         print("Before __del__ call")
 
 

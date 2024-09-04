@@ -12,7 +12,7 @@ from .context_annotation import ContextAnnotation
 @classdecorator
 class bone[T: type](ContextAnnotation):
 
-    def __init__(self, name: str = ""):
+    def __init__(self, /, name: str = ""):
         super().__init__()
         self.__name = name
 

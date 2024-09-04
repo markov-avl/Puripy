@@ -2,6 +2,7 @@ import asyncio
 import inspect
 
 from puripy.bone import Container
+from puripy.utils import MetadataUtils
 
 
 class PreProcessor:
@@ -12,10 +13,10 @@ class PreProcessor:
     def process_before_dels(self) -> None:
         before_dels = []
         for _, instance in list(self._container)[::-1]:
-            instance_before_dels = [m for _, m in inspect.getmembers(instance) if hasattr(m, "__beforedel__")]
+            instance_before_dels = [m for _, m in inspect.getmembers(instance) if MetadataUtils.is_beforedel(m)]
             if len(instance_before_dels) > 1:
                 class_name = instance.__class__.__name__
-                raise RuntimeError(f"More than one before deletion method found for '{class_name}'")
+                raise RuntimeError(f"More than one before-deletion method found for '{class_name}'")
             if instance_before_dels:
                 before_dels.append(instance_before_dels[0])
 

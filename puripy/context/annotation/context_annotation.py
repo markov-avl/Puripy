@@ -18,8 +18,7 @@ class ContextAnnotation[C: Callable](ABC):
 
         return annotation
 
-    # *args should remain due PyCharm constructor argument list checkers
-    def __init__(self, *args, **kwargs):
+    def __init__(self, /, **kwargs):
         pass
 
     def __call__(self, decoratable: C) -> C:

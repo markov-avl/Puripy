@@ -8,7 +8,7 @@ from pydantic.dataclasses import dataclass
 
 from puripy.context import Context
 
-from .decorator import classdecorator, keywordsonly
+from .decorator import classdecorator
 from .context_annotation import ContextAnnotation
 
 
@@ -17,8 +17,7 @@ from .context_annotation import ContextAnnotation
 @classdecorator
 class properties[T: type](ContextAnnotation):
 
-    @keywordsonly
-    def __init__(self, path: str = "", prefix: str = "", name: str = ""):
+    def __init__(self, /, path: str = "", prefix: str = "", name: str = ""):
         super().__init__()
         self.__path = path
         self.__prefix = prefix

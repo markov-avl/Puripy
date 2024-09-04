@@ -1,6 +1,9 @@
 from types import FunctionType
 from typing import final
 
+from puripy.context.metadata import BeforedelMetadata
+from puripy.utils import MetadataUtils
+
 from .decorator import functiondecorator
 from .context_annotation import ContextAnnotation
 
@@ -11,6 +14,7 @@ from .context_annotation import ContextAnnotation
 class beforedel[F: FunctionType](ContextAnnotation):
 
     def __call__(self, decoratable: F) -> F:
-        decoratable.__beforedel__ = True
+        metadata = BeforedelMetadata.instance()
+        MetadataUtils.append_metadata(decoratable, metadata)
 
         return decoratable
