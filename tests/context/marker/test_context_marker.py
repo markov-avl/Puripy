@@ -2,24 +2,24 @@ import re
 from unittest import TestCase
 from unittest.mock import patch, MagicMock
 
-from puripy.context.annotation import ContextAnnotation
+from puripy.context.marker import ContextMarker
 from tests.patch_mocks import VALIDATION_UTILS_VALIDATE_DECORATABLE
 
 
-class TestContextAnnotation(TestCase):
+class TestContextMarker(TestCase):
     class TestClass:
         pass
 
-    class NoArgsAnnotation(ContextAnnotation):
+    class NoArgsMarker(ContextMarker):
         pass
 
-    class ArguedAnnotation(ContextAnnotation):
+    class ArguedMarker(ContextMarker):
 
         def __init__(self, arg: str):
             super().__init__()
             self.arg = arg
 
-    class DefaultArguedAnnotation(ContextAnnotation):
+    class DefaultArguedMarker(ContextMarker):
 
         def __init__(self, arg: str = "default value"):
             super().__init__()
@@ -28,19 +28,19 @@ class TestContextAnnotation(TestCase):
     @patch(VALIDATION_UTILS_VALIDATE_DECORATABLE)
     def test_no_args_init(self, validate_decoratable_mock: MagicMock):
         # act
-        annotation = self.NoArgsAnnotation()
-        test_class = annotation(self.TestClass)
+        marker = self.NoArgsMarker()
+        test_class = marker(self.TestClass)
 
         # assert
         validate_decoratable_mock.assert_not_called()
-        self.assertEqual(self.NoArgsAnnotation, type(annotation))
+        self.assertEqual(self.NoArgsMarker, type(marker))
         self.assertEqual(self.TestClass, test_class)
 
     @patch(VALIDATION_UTILS_VALIDATE_DECORATABLE)
     def test_no_args_init_with_callable(self, validate_decoratable_mock: MagicMock):
         # act
         # noinspection PyArgumentList
-        test_class = self.NoArgsAnnotation(self.TestClass)
+        test_class = self.NoArgsMarker(self.TestClass)
 
         # assert
         validate_decoratable_mock.assert_called_once()
@@ -51,19 +51,19 @@ class TestContextAnnotation(TestCase):
         exception_message_regex = re.compile(r".*missing 1 required positional argument.*")
 
         # act & assert
-        self.assertRaisesRegex(TypeError, exception_message_regex, lambda: self.ArguedAnnotation("value"))
+        self.assertRaisesRegex(TypeError, exception_message_regex, lambda: self.ArguedMarker("value"))
 
     @patch(VALIDATION_UTILS_VALIDATE_DECORATABLE)
     def test_argued_init_with_kw_arg(self, validate_decoratable_mock: MagicMock):
         # act
-        annotation = self.ArguedAnnotation(arg="value")
-        test_class = annotation(self.TestClass)
+        marker = self.ArguedMarker(arg="value")
+        test_class = marker(self.TestClass)
 
         # assert
         validate_decoratable_mock.assert_not_called()
-        self.assertEqual(self.ArguedAnnotation, type(annotation))
+        self.assertEqual(self.ArguedMarker, type(marker))
         self.assertEqual(self.TestClass, test_class)
-        self.assertEqual("value", annotation.arg)
+        self.assertEqual("value", marker.arg)
 
     def test_argued_init_with_callable(self):
         # arrange
@@ -71,37 +71,37 @@ class TestContextAnnotation(TestCase):
 
         # act & assert
         # noinspection PyTypeChecker
-        self.assertRaisesRegex(TypeError, exception_message_regex, lambda: self.ArguedAnnotation(self.TestClass))
+        self.assertRaisesRegex(TypeError, exception_message_regex, lambda: self.ArguedMarker(self.TestClass))
 
     @patch(VALIDATION_UTILS_VALIDATE_DECORATABLE)
     def test_default_argued_init_with_pos_arg(self, validate_decoratable_mock: MagicMock):
         # act
-        annotation = self.DefaultArguedAnnotation()
-        test_class = annotation(self.TestClass)
+        marker = self.DefaultArguedMarker()
+        test_class = marker(self.TestClass)
 
         # assert
         validate_decoratable_mock.assert_not_called()
-        self.assertEqual(self.DefaultArguedAnnotation, type(annotation))
+        self.assertEqual(self.DefaultArguedMarker, type(marker))
         self.assertEqual(self.TestClass, test_class)
-        self.assertEqual(annotation.arg, "default value")
+        self.assertEqual(marker.arg, "default value")
 
     @patch(VALIDATION_UTILS_VALIDATE_DECORATABLE)
     def test_default_argued_init_with_kw_arg(self, validate_decoratable_mock: MagicMock):
         # act
-        annotation = self.DefaultArguedAnnotation(arg="value")
-        test_class = annotation(self.TestClass)
+        marker = self.DefaultArguedMarker(arg="value")
+        test_class = marker(self.TestClass)
 
         # assert
         validate_decoratable_mock.assert_not_called()
-        self.assertEqual(self.DefaultArguedAnnotation, type(annotation))
+        self.assertEqual(self.DefaultArguedMarker, type(marker))
         self.assertEqual(self.TestClass, test_class)
-        self.assertEqual("value", annotation.arg)
+        self.assertEqual("value", marker.arg)
 
     @patch(VALIDATION_UTILS_VALIDATE_DECORATABLE)
     def test_default_argued_init_with_callable(self, validate_decoratable_mock: MagicMock):
         # act
         # noinspection PyTypeChecker
-        test_class = self.DefaultArguedAnnotation(self.TestClass)
+        test_class = self.DefaultArguedMarker(self.TestClass)
 
         # assert
         validate_decoratable_mock.assert_called_once()

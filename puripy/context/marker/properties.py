@@ -9,13 +9,13 @@ from pydantic.dataclasses import dataclass
 from puripy.context import Context
 
 from .decorator import classdecorator
-from .context_annotation import ContextAnnotation
+from .context_marker import ContextMarker
 
 
 # noinspection PyPep8Naming
 @final
 @classdecorator
-class properties[T: type](ContextAnnotation):
+class properties[T: type](ContextMarker):
 
     def __init__(self, /, path: str = "", prefix: str = "", name: str = ""):
         super().__init__()

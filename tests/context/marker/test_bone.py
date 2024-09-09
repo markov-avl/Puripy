@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from puripy.context.annotation import bone
+from puripy.context.marker import bone
 
 
 class TestBone(TestCase):

@@ -10,7 +10,7 @@ from typing_extensions import deprecated
 from puripy.context import Context
 
 
-@deprecated("Use puripy.context.annotation.properties instead")
+@deprecated("Use properties from puripy.context.marker instead")
 def property_holder[T](*args: Any, path: str = "", prefix: str = "", name: str = "") -> Callable[[type[T]], type[T]]:
     def wrapper(cls: Callable) -> type[T]:
         context = Context()

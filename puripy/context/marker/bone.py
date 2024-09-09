@@ -4,13 +4,13 @@ from typing import final
 from puripy.context import Context
 from puripy.utils import BoneUtils
 from .decorator import classdecorator
-from .context_annotation import ContextAnnotation
+from .context_marker import ContextMarker
 
 
 # noinspection PyPep8Naming
 @final
 @classdecorator
-class bone[T: type](ContextAnnotation):
+class bone[T: type](ContextMarker):
 
     def __init__(self, /, name: str = ""):
         super().__init__()

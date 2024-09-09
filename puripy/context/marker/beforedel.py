@@ -1,20 +1,20 @@
 from types import FunctionType
 from typing import final
 
-from puripy.context.metadata import AfterinitMetadata
+from puripy.context.metadata import BeforedelMetadata
 from puripy.utils import MetadataUtils
 
 from .decorator import functiondecorator
-from .context_annotation import ContextAnnotation
+from .context_marker import ContextMarker
 
 
 # noinspection PyPep8Naming
 @final
 @functiondecorator
-class afterinit[F: FunctionType](ContextAnnotation):
+class beforedel[F: FunctionType](ContextMarker):
 
     def __call__(self, decoratable: F) -> F:
-        metadata = AfterinitMetadata.instance()
+        metadata = BeforedelMetadata.instance()
         MetadataUtils.append_metadata(decoratable, metadata)
 
         return decoratable

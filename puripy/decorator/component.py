@@ -7,7 +7,7 @@ from puripy.context import Context
 from puripy.utils import BoneUtils
 
 
-@deprecated("Use puripy.context.annotation.bone instead")
+@deprecated("Use bone from puripy.context.marker instead")
 def component[T](*args: type[T] | Any, name: str = "") -> type[T]:
     def wrapper(cls: type[T]) -> type[T]:
         if BoneUtils.has_string_annotations(cls):

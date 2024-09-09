@@ -1,5 +1,5 @@
 from puripy import PuripyApplication, PuripyApplicationRunner
-from puripy.context.annotation import bone
+from puripy.context.marker import bone
 
 
 @bone
