@@ -1,8 +1,8 @@
 from puripy import PuripyApplication, PuripyApplicationRunner
-from puripy.context.marker import bone
+from puripy.context.marker import particle
 
 
-@bone
+@particle
 class ValueHolder:
 
     def __init__(self):

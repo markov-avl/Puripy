@@ -4,5 +4,5 @@ from .containerized_metadata import ContainerizedMetadata
 
 
 @dataclass
-class BoneMetadata(ContainerizedMetadata):
+class ParticleMetadata(ContainerizedMetadata):
     pass

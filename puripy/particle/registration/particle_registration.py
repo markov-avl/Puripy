@@ -4,5 +4,5 @@ from .registration import Registration
 
 
 @dataclass
-class BoneRegistration[T](Registration[T]):
+class ParticleRegistration[T](Registration[T]):
     pass

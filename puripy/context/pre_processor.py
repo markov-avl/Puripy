@@ -1,7 +1,7 @@
 import asyncio
 import inspect
 
-from puripy.bone import Container
+from puripy.particle import Container
 from puripy.utils import MetadataUtils
 
 

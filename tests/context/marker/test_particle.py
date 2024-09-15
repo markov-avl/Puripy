@@ -1,15 +1,15 @@
 from unittest import TestCase
 
-from puripy.context.marker import bone
+from puripy.context.marker import particle
 
 
-class TestBone(TestCase):
+class TestParticle(TestCase):
     class TestClass:
         pass
 
     def test_no_args_decoration(self):
         # act
-        test_class = bone()(self.TestClass)
+        test_class = particle()(self.TestClass)
 
         # assert
         # TODO: assert inside __call__ calls
@@ -18,7 +18,7 @@ class TestBone(TestCase):
     def test_no_args_uncalled_decoration(self):
         # act
         # noinspection PyTypeChecker
-        test_class = bone(self.TestClass)
+        test_class = particle(self.TestClass)
 
         # assert
         # TODO: assert inside __call__ calls
@@ -26,7 +26,7 @@ class TestBone(TestCase):
 
     def test_pos_args_decoration(self):
         # act
-        test_class = bone("name")(self.TestClass)
+        test_class = particle("name")(self.TestClass)
 
         # assert
         # TODO: assert inside __call__ calls
@@ -35,7 +35,7 @@ class TestBone(TestCase):
 
     def test_kw_args_decoration(self):
         # act
-        test_class = bone(name="name")(self.TestClass)
+        test_class = particle(name="name")(self.TestClass)
 
         # assert
         # TODO: assert inside __call__ calls

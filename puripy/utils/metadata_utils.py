@@ -4,7 +4,7 @@ from puripy.context.metadata import (Metadata,
                                      DecoratorMetadata,
                                      AfterinitMetadata,
                                      BeforedelMetadata,
-                                     BoneMetadata,
+                                     ParticleMetadata,
                                      PropertiesMetadata,
                                      ContainerizedMetadata)
 
@@ -56,8 +56,8 @@ class MetadataUtils:
         return cls.has_metadata_of_type(obj, BeforedelMetadata)
 
     @classmethod
-    def is_bone(cls, obj: Any) -> bool:
-        return cls.has_metadata_of_type(obj, BoneMetadata)
+    def is_particle(cls, obj: Any) -> bool:
+        return cls.has_metadata_of_type(obj, ParticleMetadata)
 
     @classmethod
     def is_properties(cls, obj: Any) -> bool:

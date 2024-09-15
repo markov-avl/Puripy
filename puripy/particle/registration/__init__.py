@@ -1,4 +1,4 @@
 from .registration import Registration
 
-from .bone_registration import BoneRegistration
+from .particle_registration import ParticleRegistration
 from .properties_registration import PropertiesRegistration

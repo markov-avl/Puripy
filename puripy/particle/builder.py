@@ -7,10 +7,10 @@ from puripy.property import SourceParser
 from .container import Container
 from .dependency import DirectDependency, GenericDependency, IndirectDependency
 from .registrar import Registrar
-from .registration import PropertiesRegistration, BoneRegistration
+from .registration import PropertiesRegistration, ParticleRegistration
 
 _Dependency = DirectDependency | GenericDependency | IndirectDependency
-_Registration = PropertiesRegistration | BoneRegistration
+_Registration = PropertiesRegistration | ParticleRegistration
 
 
 class Builder:
@@ -38,8 +38,8 @@ class Builder:
 
         if isinstance(registration, PropertiesRegistration):
             instance = self._properties(registration)
-        elif isinstance(registration, BoneRegistration):
-            instance = self._bone(registration, dependencies)
+        elif isinstance(registration, ParticleRegistration):
+            instance = self._particle(registration, dependencies)
         else:
             raise TypeError(f"Unknown registration type: {registration.__class__}")
 
@@ -48,7 +48,7 @@ class Builder:
     def _get_registration_dependencies(self, registration: _Registration) -> list[_Dependency]:
         if isinstance(registration, PropertiesRegistration):
             dependencies = [IndirectDependency(
-                registration=next(filter(lambda r: issubclass(r.type, SourceParser), self._registrar.get_bones()))
+                registration=next(filter(lambda r: issubclass(r.type, SourceParser), self._registrar.get_particles()))
             )]
         else:
             dependencies = self._get_type_dependencies(registration.type)
@@ -111,7 +111,7 @@ class Builder:
 
         return registration.type(**properties)
 
-    def _bone[T](self, registration: BoneRegistration[T], dependencies: list[_Dependency]) -> T:
+    def _particle[T](self, registration: ParticleRegistration[T], dependencies: list[_Dependency]) -> T:
         kwargs = {}
 
         for dependency in dependencies:

@@ -1,8 +1,8 @@
 from itertools import chain
 
-from puripy.utils import BoneUtils
+from puripy.utils import ParticleUtils
 
-from .registration import BoneRegistration, PropertiesRegistration
+from .registration import ParticleRegistration, PropertiesRegistration
 
 
 class Registrar:
@@ -10,24 +10,24 @@ class Registrar:
     def __init__[T](self):
         self._registry: dict[type[T], list[T]] = {}
 
-    def register_bone[T](self, cls: T, name: str = "") -> None:
-        registration = BoneRegistration(
+    def register_particle[T](self, cls: T, name: str = "") -> None:
+        registration = ParticleRegistration(
             type=cls,
-            name=BoneUtils.get_name(cls, name)
+            name=ParticleUtils.get_name(cls, name)
         )
         self._register(registration)
 
     def register_properties[T](self, cls: T, path: str, prefix: str, name: str = "") -> None:
         registration = PropertiesRegistration(
             type=cls,
-            name=BoneUtils.get_name(cls, name),
+            name=ParticleUtils.get_name(cls, name),
             path=path,
             prefix=prefix
         )
         self._register(registration)
 
-    def get_bones(self) -> list[BoneRegistration]:
-        return self._registry[BoneRegistration]
+    def get_particles(self) -> list[ParticleRegistration]:
+        return self._registry[ParticleRegistration]
 
     def get_properties(self) -> list[PropertiesRegistration]:
         return self._registry[PropertiesRegistration]

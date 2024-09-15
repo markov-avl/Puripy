@@ -1,4 +1,4 @@
-from puripy.bone import Builder
+from puripy.particle import Builder
 
 
 class Assembler:
