@@ -3,6 +3,7 @@ from unittest import TestCase
 from unittest.mock import patch, MagicMock
 
 from puripy.context.marker import ContextMarker
+from puripy.context.metadata import Metadata
 from tests.patch_mocks import VALIDATION_UTILS_VALIDATE_DECORATABLE
 
 
@@ -11,7 +12,8 @@ class TestContextMarker(TestCase):
         pass
 
     class NoArgsMarker(ContextMarker):
-        pass
+
+        def _to_metadata(self) -> Metadata: ...
 
     class ArguedMarker(ContextMarker):
 
@@ -19,11 +21,15 @@ class TestContextMarker(TestCase):
             super().__init__()
             self.arg = arg
 
+        def _to_metadata(self) -> Metadata: ...
+
     class DefaultArguedMarker(ContextMarker):
 
         def __init__(self, arg: str = "default value"):
             super().__init__()
             self.arg = arg
+
+        def _to_metadata(self) -> Metadata: ...
 
     @patch(VALIDATION_UTILS_VALIDATE_DECORATABLE)
     def test_no_args_init(self, validate_decoratable_mock: MagicMock):

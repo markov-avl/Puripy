@@ -7,6 +7,8 @@ from pydantic import field_validator
 from pydantic.dataclasses import dataclass
 
 from puripy.context import Context
+from puripy.context.metadata import PropertiesMetadata, Metadata
+from puripy.utils import MetadataUtils
 
 from .decorator import classdecorator
 from .context_marker import ContextMarker
@@ -24,6 +26,9 @@ class properties[T: type](ContextMarker):
         self.__name = name
 
     def __call__(self, decoratable: T) -> T:
+        metadata = self._to_metadata()
+        MetadataUtils.append_metadata(decoratable, metadata)
+
         context = Context()
         context.registrar.register_properties(decoratable, self.__path, self.__prefix, self.__name)
 
@@ -32,6 +37,9 @@ class properties[T: type](ContextMarker):
 
         # noinspection PyTypeChecker
         return dataclass(decoratable)
+
+    def _to_metadata(self) -> Metadata:
+        return PropertiesMetadata(self.__name, self.__prefix, self.__path)
 
     def __make_inner_fields_extractable_recursively(self, decoratable: T) -> None:
         # noinspection PyUnresolvedReferences

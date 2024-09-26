@@ -1,10 +1,15 @@
 from unittest import TestCase
 
 from puripy.utils import ScanUtils
-from tests.testpackage import Application
+from tests.testpackage import TestApplication
+from tests.testpackage.included import TestParticle, TestProperties
 
 
-class TestClassScanner(TestCase):
+class TestScanUtils(TestCase):
 
-    def test_scan(self):
-        print(ScanUtils.scan_particles(Application))
+    def test_find_particles(self):
+        # Act
+        particles = ScanUtils.find_particles(TestApplication)
+
+        # Assert
+        self.assertSetEqual({TestParticle, TestProperties}, particles)

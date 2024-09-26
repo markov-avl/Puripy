@@ -1,8 +1,11 @@
 import inspect
+import types
 from typing import final
 
 from puripy.context import Context
-from puripy.utils import ParticleUtils
+from puripy.context.metadata import ParticleMetadata, Metadata
+from puripy.utils import ParticleUtils, MetadataUtils
+
 from .decorator import classdecorator
 from .context_marker import ContextMarker
 
@@ -17,6 +20,9 @@ class particle[T: type](ContextMarker):
         self.__name = name
 
     def __call__(self, decoratable: T) -> T:
+        metadata = self._to_metadata()
+        MetadataUtils.append_metadata(decoratable, metadata)
+
         if ParticleUtils.has_string_annotations(decoratable):
             raise RuntimeError(f"Particle {decoratable} has string-annotated dependencies. Is 'annotations' imported?")
         if ParticleUtils.has_empty_annotations(decoratable):
@@ -29,3 +35,6 @@ class particle[T: type](ContextMarker):
         context.registrar.register_particle(decoratable, self.__name)
 
         return decoratable
+
+    def _to_metadata(self) -> Metadata:
+        return ParticleMetadata(self.__name)

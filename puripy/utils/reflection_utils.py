@@ -10,9 +10,9 @@ class ReflectionUtils:
         return inspect.ismethod(callable_) or inspect.isfunction(callable_)
 
     @classmethod
-    def is_defined_in_any(cls, obj: object, packages: set[str]) -> bool:
+    def is_defined_in_any(cls, module_name: str, packages: set[str]) -> bool:
         for package in packages:
-            if obj.__module__.startswith(package):
+            if module_name.startswith(package):
                 return True
         return False
 

@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import Callable
 
+from puripy.context.metadata import Metadata
 from puripy.utils import ValidationUtils
 
 
@@ -23,3 +24,6 @@ class ContextMarker[C: Callable](ABC):
 
     def __call__(self, decoratable: C) -> C:
         return decoratable
+
+    @abstractmethod
+    def _to_metadata(self) -> Metadata: ...
