@@ -2,11 +2,15 @@ from typing import Any, Callable
 
 from typing_extensions import deprecated
 
+from puripy.context.metadata import AfterinitMetadata
+from puripy.utils import MetadataUtils
+
 
 @deprecated("Use afterinit from puripy.context.marker instead")
 def post_init[T](*args: Any) -> Callable[[type[T]], type[T]]:
     def wrapper(method: Callable) -> type[T]:
-        method.__afterinit__ = True
+        metadata = AfterinitMetadata.instance()
+        MetadataUtils.append_metadata(method, metadata)
 
         return method
 

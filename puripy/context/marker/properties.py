@@ -1,7 +1,7 @@
 import inspect
 import os
 import re
-from typing import Any, final
+from typing import Any, final, override
 
 from pydantic import field_validator
 from pydantic.dataclasses import dataclass
@@ -25,6 +25,7 @@ class properties[T: type](ContextMarker):
         self.__prefix = prefix
         self.__name = name
 
+    @override
     def __call__(self, decoratable: T) -> T:
         metadata = self._to_metadata()
         MetadataUtils.append_metadata(decoratable, metadata)
@@ -38,6 +39,7 @@ class properties[T: type](ContextMarker):
         # noinspection PyTypeChecker
         return dataclass(decoratable)
 
+    @override
     def _to_metadata(self) -> Metadata:
         return PropertiesMetadata(self.__name, self.__prefix, self.__path)
 

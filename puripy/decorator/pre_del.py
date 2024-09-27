@@ -2,11 +2,15 @@ from typing import Any, Callable
 
 from typing_extensions import deprecated
 
+from puripy.context.metadata import BeforedelMetadata
+from puripy.utils import MetadataUtils
+
 
 @deprecated("Use beforedel from puripy.context.marker instead")
 def pre_del[T](*args: Any) -> Callable[[type[T]], type[T]]:
     def wrapper(method: Callable) -> type[T]:
-        method.__beforedel__ = True
+        metadata = BeforedelMetadata.instance()
+        MetadataUtils.append_metadata(method, metadata)
 
         return method
 

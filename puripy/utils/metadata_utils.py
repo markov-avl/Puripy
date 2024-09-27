@@ -1,4 +1,4 @@
-from typing import final, Any, Callable
+from typing import final, Any
 
 from puripy.context.metadata import (Metadata,
                                      DecoratorMetadata,

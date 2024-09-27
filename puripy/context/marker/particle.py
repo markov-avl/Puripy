@@ -1,6 +1,5 @@
 import inspect
-import types
-from typing import final
+from typing import final, override
 
 from puripy.context import Context
 from puripy.context.metadata import ParticleMetadata, Metadata
@@ -19,6 +18,7 @@ class particle[T: type](ContextMarker):
         super().__init__()
         self.__name = name
 
+    @override
     def __call__(self, decoratable: T) -> T:
         metadata = self._to_metadata()
         MetadataUtils.append_metadata(decoratable, metadata)
@@ -36,5 +36,6 @@ class particle[T: type](ContextMarker):
 
         return decoratable
 
+    @override
     def _to_metadata(self) -> Metadata:
         return ParticleMetadata(self.__name)

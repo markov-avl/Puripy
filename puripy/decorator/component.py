@@ -4,12 +4,16 @@ from typing import Any
 from typing_extensions import deprecated
 
 from puripy.context import Context
-from puripy.utils import ParticleUtils
+from puripy.context.metadata import ParticleMetadata
+from puripy.utils import ParticleUtils, MetadataUtils
 
 
 @deprecated("Use particle from puripy.context.marker instead")
 def component[T](*args: type[T] | Any, name: str = "") -> type[T]:
     def wrapper(cls: type[T]) -> type[T]:
+        metadata = ParticleMetadata(name)
+        MetadataUtils.append_metadata(cls, metadata)
+
         if ParticleUtils.has_string_annotations(cls):
             raise RuntimeError(f"Component {cls} has string-annotated dependencies. Is 'annotations' imported?")
         if ParticleUtils.has_empty_annotations(cls):

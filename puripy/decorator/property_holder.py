@@ -8,11 +8,16 @@ from pydantic.dataclasses import dataclass
 from typing_extensions import deprecated
 
 from puripy.context import Context
+from puripy.context.metadata import PropertiesMetadata
+from puripy.utils import MetadataUtils
 
 
 @deprecated("Use properties from puripy.context.marker instead")
 def property_holder[T](*args: Any, path: str = "", prefix: str = "", name: str = "") -> Callable[[type[T]], type[T]]:
     def wrapper(cls: Callable) -> type[T]:
+        metadata = PropertiesMetadata(name, path, prefix)
+        MetadataUtils.append_metadata(cls, metadata)
+
         context = Context()
         context.registrar.register_properties(cls, path, prefix, name)
 
