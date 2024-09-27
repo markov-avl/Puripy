@@ -4,10 +4,17 @@ from .metadata import Metadata
 
 
 class BeforedelMetadata(Metadata):
-    __INSTANCE = None
+    __INSTANCE: BeforedelMetadata = None
+
+    def __new__(cls, *args, **kwargs):
+        instance = super().__new__(cls)
+        instance.__init__()
+
+        if cls.__INSTANCE is None:
+            cls.__INSTANCE = instance
+
+        return instance
 
     @classmethod
     def instance(cls) -> BeforedelMetadata:
-        if cls.__INSTANCE is None:
-            cls.__INSTANCE = cls()
-        return cls.__INSTANCE
+        return cls() if cls.__INSTANCE is None else cls.__INSTANCE
