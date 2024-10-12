@@ -10,19 +10,26 @@ class DecoratorMetadata(Metadata):
         CLASS = "class"
         FUNCTION = "function"
 
+    __CLASS_INSTANCE = None
+    __FUNCTION_INSTANCE = None
+
     def __init__(self, decoratable_type: DecoratableType):
-        self._decoratable_type = decoratable_type
+        self.__decoratable_type = decoratable_type
 
     def for_classes(self) -> bool:
-        return self._decoratable_type == self.DecoratableType.CLASS
+        return self.__decoratable_type == self.DecoratableType.CLASS
 
     def for_functions(self) -> bool:
-        return self._decoratable_type == self.DecoratableType.FUNCTION
+        return self.__decoratable_type == self.DecoratableType.FUNCTION
 
     @classmethod
     def of_class(cls) -> DecoratorMetadata:
-        return DecoratorMetadata(cls.DecoratableType.CLASS)
+        if cls.__CLASS_INSTANCE is None:
+            cls.__CLASS_INSTANCE = cls(cls.DecoratableType.CLASS)
+        return cls.__CLASS_INSTANCE
 
     @classmethod
     def of_function(cls) -> DecoratorMetadata:
-        return DecoratorMetadata(cls.DecoratableType.FUNCTION)
+        if cls.__FUNCTION_INSTANCE is None:
+            cls.__FUNCTION_INSTANCE = cls(cls.DecoratableType.FUNCTION)
+        return cls.__FUNCTION_INSTANCE

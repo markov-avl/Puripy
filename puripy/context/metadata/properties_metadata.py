@@ -1,10 +1,9 @@
 from dataclasses import dataclass
 
-from .metadata import Metadata
+from .containerized_metadata import ContainerizedMetadata
 
 
 @dataclass
-class PropertiesMetadata(Metadata):
-    name: str
+class PropertiesMetadata(ContainerizedMetadata):
     path: str
     prefix: str

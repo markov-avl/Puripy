@@ -1,6 +1,7 @@
 import inspect
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import final, Any, Callable
+from typing import final, Any
 
 from puripy.utils import MetadataUtils
 
@@ -14,10 +15,10 @@ class ValidationUtils:
         validate: bool
 
     @classmethod
-    def validate_decoratable(cls, annotation: Any, decoratable: Callable) -> None:
+    def validate_decoratable(cls, marker: Any, decoratable: Callable) -> None:
         decoratable_validations = (
-            cls.DecoratableValidation("class", inspect.isclass, MetadataUtils.is_class_decorator(annotation)),
-            cls.DecoratableValidation("function", inspect.isfunction, MetadataUtils.is_function_decorator(annotation))
+            cls.DecoratableValidation("class", inspect.isclass, MetadataUtils.is_class_decorator(marker)),
+            cls.DecoratableValidation("function", inspect.isfunction, MetadataUtils.is_function_decorator(marker))
         )
 
         if not any(v.validator(decoratable) for v in decoratable_validations if v.validate):

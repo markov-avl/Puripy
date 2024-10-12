@@ -3,23 +3,23 @@ from typing import Any
 
 from typing_extensions import deprecated
 
-from puripy.context import Context
-from puripy.utils import BoneUtils
+from puripy.context.metadata import ParticleMetadata
+from puripy.utils import ContainerizedUtils, MetadataUtils
 
 
-@deprecated("Use puripy.context.annotation.bone instead")
+@deprecated("Use particle from puripy.context.marker instead")
 def component[T](*args: type[T] | Any, name: str = "") -> type[T]:
     def wrapper(cls: type[T]) -> type[T]:
-        if BoneUtils.has_string_annotations(cls):
+        metadata = ParticleMetadata(name)
+        MetadataUtils.append_metadata(cls, metadata)
+
+        if ContainerizedUtils.has_string_annotations(cls):
             raise RuntimeError(f"Component {cls} has string-annotated dependencies. Is 'annotations' imported?")
-        if BoneUtils.has_empty_annotations(cls):
+        if ContainerizedUtils.has_empty_annotations(cls):
             raise RuntimeError(f"Component {cls} has unknown-type dependencies. Annotate all params.")
 
         if inspect.isabstract(cls):
             raise RuntimeError("Abstract class cannot be a component")
-
-        context = Context()
-        context.registrar.register_bone(cls, name)
 
         return cls
 

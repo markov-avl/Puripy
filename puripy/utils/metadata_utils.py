@@ -1,6 +1,12 @@
 from typing import final, Any
 
-from puripy.context.metadata import Metadata, DecoratorMetadata
+from puripy.context.metadata import (Metadata,
+                                     DecoratorMetadata,
+                                     AfterinitMetadata,
+                                     BeforedelMetadata,
+                                     ParticleMetadata,
+                                     PropertiesMetadata,
+                                     ContainerizedMetadata)
 
 
 @final
@@ -23,11 +29,40 @@ class MetadataUtils:
         return list(filter(lambda m: isinstance(m, metadata_type), cls.get_metadata(obj)))
 
     @classmethod
+    def get_only_one_metadata_of_type[M: Metadata](cls, obj: Any, metadata_type: type[M]) -> M:
+        metadata = cls.get_metadata_of_type(obj, metadata_type)
+        if len(metadata) != 1:
+            raise ValueError(f"Cannot extract only one metadata from {obj} of type {metadata_type}. Found: {metadata}")
+        return metadata[0]
+
+    @classmethod
+    def has_metadata_of_type[M: Metadata](cls, obj: Any, metadata_type: type[M]) -> bool:
+        return bool(cls.get_metadata_of_type(obj, metadata_type))
+
+    @classmethod
     def is_class_decorator(cls, obj: Any) -> bool:
-        decorator_metadata = cls.get_metadata_of_type(obj, DecoratorMetadata)
-        return not decorator_metadata or any(m.for_classes() for m in decorator_metadata)
+        return any(m.for_classes() for m in cls.get_metadata_of_type(obj, DecoratorMetadata))
 
     @classmethod
     def is_function_decorator(cls, obj: Any) -> bool:
-        decorator_metadata = cls.get_metadata_of_type(obj, DecoratorMetadata)
-        return not decorator_metadata or any(m.for_functions() for m in decorator_metadata)
+        return any(m.for_functions() for m in cls.get_metadata_of_type(obj, DecoratorMetadata))
+
+    @classmethod
+    def is_afterinit(cls, obj: Any) -> bool:
+        return cls.has_metadata_of_type(obj, AfterinitMetadata)
+
+    @classmethod
+    def is_beforedel(cls, obj: Any) -> bool:
+        return cls.has_metadata_of_type(obj, BeforedelMetadata)
+
+    @classmethod
+    def is_particle(cls, obj: Any) -> bool:
+        return cls.has_metadata_of_type(obj, ParticleMetadata)
+
+    @classmethod
+    def is_properties(cls, obj: Any) -> bool:
+        return cls.has_metadata_of_type(obj, PropertiesMetadata)
+
+    @classmethod
+    def is_containerized(cls, obj: Any) -> bool:
+        return cls.has_metadata_of_type(obj, ContainerizedMetadata)
