@@ -1,5 +1,6 @@
 import inspect
-from typing import final, Any, Callable
+from collections.abc import Callable
+from typing import final, Any
 
 import inflection
 
@@ -7,7 +8,7 @@ from .reflection_utils import ReflectionUtils
 
 
 @final
-class ParticleUtils:
+class ContainerizedUtils:
 
     @classmethod
     def get_name(cls, obj: Any, name: str = "") -> str:

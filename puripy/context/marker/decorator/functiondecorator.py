@@ -1,4 +1,5 @@
-from typing import Callable, final
+from collections.abc import Callable
+from typing import final
 
 from puripy.context.metadata import DecoratorMetadata
 from puripy.utils import MetadataUtils

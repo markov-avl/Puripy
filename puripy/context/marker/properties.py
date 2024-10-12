@@ -6,7 +6,6 @@ from typing import Any, final, override
 from pydantic import field_validator
 from pydantic.dataclasses import dataclass
 
-from puripy.context import Context
 from puripy.context.metadata import PropertiesMetadata, Metadata
 from puripy.utils import MetadataUtils
 
@@ -27,27 +26,21 @@ class properties[T: type](ContextMarker):
 
     @override
     def __call__(self, decoratable: T) -> T:
-        metadata = self._to_metadata()
-        MetadataUtils.append_metadata(decoratable, metadata)
-
-        context = Context()
-        context.registrar.register_properties(decoratable, self.__path, self.__prefix, self.__name)
-
         self.__make_inner_fields_extractable_recursively(decoratable)
         self.__make_inner_classes_as_dataclasses_recursively(decoratable)
 
         # noinspection PyTypeChecker
-        return dataclass(decoratable)
+        return super().__call__(dataclass(decoratable))
 
     @override
     def _to_metadata(self) -> Metadata:
-        return PropertiesMetadata(self.__name, self.__prefix, self.__path)
+        return PropertiesMetadata(name=self.__name, prefix=self.__prefix, path=self.__path)
 
     def __make_inner_fields_extractable_recursively(self, decoratable: T) -> None:
         # noinspection PyUnresolvedReferences
         extractor = field_validator(*decoratable.__annotations__.keys(), mode="before")
         decoratable.__extract__ = extractor(self.__extract_env)
-        for attr, value in decoratable.__dict__.items():
+        for value in decoratable.__dict__.values():
             if inspect.isclass(value):
                 self.__make_inner_fields_extractable_recursively(value)
 
@@ -62,8 +55,7 @@ class properties[T: type](ContextMarker):
     def __extract_env(value: Any) -> Any:
         if isinstance(value, str):
             for match in re.finditer(r'\$\{([A-Za-z0-9_-]+)(:([^}]*))?}', value):
-                env = os.getenv(match.group(1))
-                if env is None:
+                if (env := os.getenv(match.group(1))) is None:
                     if match.group(2) is None:
                         raise RuntimeError(f"Environment '{match.group(1)}' cannot be resolved")
                     env = match.group(3)

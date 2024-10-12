@@ -1,13 +1,13 @@
 import inspect
 import os
 import re
-from typing import Callable, Any
+from collections.abc import Callable
+from typing import Any
 
 from pydantic import field_validator
 from pydantic.dataclasses import dataclass
 from typing_extensions import deprecated
 
-from puripy.context import Context
 from puripy.context.metadata import PropertiesMetadata
 from puripy.utils import MetadataUtils
 
@@ -17,9 +17,6 @@ def property_holder[T](*args: Any, path: str = "", prefix: str = "", name: str =
     def wrapper(cls: Callable) -> type[T]:
         metadata = PropertiesMetadata(name, path, prefix)
         MetadataUtils.append_metadata(cls, metadata)
-
-        context = Context()
-        context.registrar.register_properties(cls, path, prefix, name)
 
         _make_inner_fields_extractable_recursively(cls)
         _make_inner_classes_as_dataclasses_recursively(cls)
@@ -32,8 +29,7 @@ def property_holder[T](*args: Any, path: str = "", prefix: str = "", name: str =
 def _extract_env(value: Any):
     if isinstance(value, str):
         for match in re.finditer(r'\$\{([A-Za-z0-9_-]+)(:([^}]*))?}', value):
-            env = os.getenv(match.group(1))
-            if env is None:
+            if (env := os.getenv(match.group(1))) is None:
                 if match.group(2) is None:
                     raise RuntimeError(f"Environment '{match.group(1)}' cannot be resolved")
                 env = match.group(3)
@@ -44,7 +40,7 @@ def _extract_env(value: Any):
 def _make_inner_fields_extractable_recursively(cls: Callable):
     # noinspection PyUnresolvedReferences
     cls.__extract__ = field_validator(*cls.__annotations__.keys(), mode='before')(_extract_env)
-    for attr, value in cls.__dict__.items():
+    for value in cls.__dict__.values():
         if inspect.isclass(value):
             _make_inner_fields_extractable_recursively(value)
 

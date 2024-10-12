@@ -86,7 +86,7 @@ class Builder:
                         registrations[registration.name] = registration
 
                 if not registrations:
-                    RuntimeError(f"No matching dependencies found for {cls}: {param_name}[{param_annotation}]")
+                    raise RuntimeError(f"No matching dependencies found for {cls}: {param_name}[{param_annotation}]")
                 if len(registrations) == 1:
                     registration = list(registrations.values())[0]
                 elif param_name in registrations:

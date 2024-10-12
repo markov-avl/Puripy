@@ -12,8 +12,12 @@ class YamlPropertyParser(PropertyParser):
     def is_parseable(self, source: Any) -> bool:
         return isinstance(source, str) and (source.endswith(".yaml") or source.endswith(".yml"))
 
-    @cache
     @override
     def parse(self, source: str) -> dict:
-        with open(source) as properties:
+        return self.__parse(source)
+
+    @staticmethod
+    @cache
+    def __parse(source: str) -> dict:
+        with open(source, encoding="utf-8") as properties:
             return yaml.load(properties, yaml.Loader)

@@ -1,6 +1,7 @@
 import inspect
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import final, Any, Callable
+from typing import final, Any
 
 from puripy.utils import MetadataUtils
 

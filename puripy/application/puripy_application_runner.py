@@ -1,18 +1,19 @@
 import asyncio
 import inspect
-from abc import ABC
+from typing import final
 
 from puripy.context import Context
 
 from .puripy_application import PuripyApplication
 
 
-class PuripyApplicationRunner(ABC):
+@final
+class PuripyApplicationRunner:
 
     @classmethod
     def run(cls, application_type: type[PuripyApplication]):
         if not issubclass(application_type, PuripyApplication):
-            raise TypeError("Expected type of PuripyApplication")
+            raise TypeError("Expected type extended from PuripyApplication")
 
         loop = asyncio.get_event_loop()
         context = Context()

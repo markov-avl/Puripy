@@ -7,7 +7,7 @@ class BeforedelMetadata(Metadata):
     __INSTANCE: BeforedelMetadata = None
 
     def __new__(cls, *args, **kwargs):
-        instance = super().__new__(cls)
+        instance = super().__new__(cls,  *args, **kwargs)
         instance.__init__()
 
         if cls.__INSTANCE is None:

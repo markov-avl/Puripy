@@ -1,5 +1,6 @@
 import inspect
-from typing import final, Callable
+from collections.abc import Callable
+from typing import final
 
 
 @final
@@ -11,10 +12,7 @@ class ReflectionUtils:
 
     @classmethod
     def is_defined_in_any(cls, module_name: str, packages: set[str]) -> bool:
-        for package in packages:
-            if module_name.startswith(package):
-                return True
-        return False
+        return any(module_name.startswith(package) for package in packages)
 
     @classmethod
     def params_of(cls, callable_: Callable) -> list[inspect.Parameter]:
