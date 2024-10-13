@@ -44,7 +44,7 @@ class TestAfterinitMetadata(TestCase):
         self.assertNotEqual(instanced, constructed_second)
         self.assertNotEqual(constructed_first, constructed_second)
 
-    # TODO: disabled because the test only works in the newly created context
+    # FIXME: disabled because the test only works in the newly created context
     def disabled_test_instance_after_constructor(self):
         """
         Tests the instance method returns the same instance after using the constructor
