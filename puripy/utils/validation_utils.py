@@ -1,26 +1,24 @@
 import inspect
 from collections.abc import Callable
 from dataclasses import dataclass
-from typing import final, Any
+from typing import Any
 
-from puripy.utils import MetadataUtils
+from .metadata_utils import is_class_decorator, is_function_decorator
 
 
-@final
-class ValidationUtils:
-    @dataclass
-    class DecoratableValidation:
-        type: str
-        validator: Callable[[Any], bool]
-        validate: bool
+@dataclass
+class DecoratableValidation:
+    type: str
+    validator: Callable[[Any], bool]
+    validate: bool
 
-    @classmethod
-    def validate_decoratable(cls, marker: Any, decoratable: Callable) -> None:
-        decoratable_validations = (
-            cls.DecoratableValidation("class", inspect.isclass, MetadataUtils.is_class_decorator(marker)),
-            cls.DecoratableValidation("function", inspect.isfunction, MetadataUtils.is_function_decorator(marker))
-        )
 
-        if not any(v.validator(decoratable) for v in decoratable_validations if v.validate):
-            valid_types = ", ".join(v.type for v in decoratable_validations if v.validate)
-            raise RuntimeError(f"Decorated object {decoratable} must be any of the following types: {valid_types}")
+def validate_decoratable(marker: Any, decoratable: Callable) -> None:
+    decoratable_validations = (
+        DecoratableValidation("class", inspect.isclass, is_class_decorator(marker)),
+        DecoratableValidation("function", inspect.isfunction, is_function_decorator(marker))
+    )
+
+    if not any(v.validator(decoratable) for v in decoratable_validations if v.validate):
+        valid_types = ", ".join(v.type for v in decoratable_validations if v.validate)
+        raise RuntimeError(f"Decorated object {decoratable} must be any of the following types: {valid_types}")

@@ -4,7 +4,8 @@ from abc import ABC, abstractmethod
 from collections.abc import Callable
 
 from puripy.context.metadata import Metadata
-from puripy.utils import ValidationUtils, MetadataUtils
+from puripy.utils.metadata_utils import append_metadata
+from puripy.utils.validation_utils import validate_decoratable
 
 
 class ContextMarker[C: Callable](ABC):
@@ -14,7 +15,7 @@ class ContextMarker[C: Callable](ABC):
         marker.__init__(**kwargs)
 
         if args and callable(args[0]):
-            ValidationUtils.validate_decoratable(marker, args[0])
+            validate_decoratable(marker, args[0])
             return marker(args[0])
 
         return marker
@@ -24,7 +25,7 @@ class ContextMarker[C: Callable](ABC):
 
     def __call__(self, decoratable: C) -> C:
         metadata = self._to_metadata()
-        MetadataUtils.append_metadata(decoratable, metadata)
+        append_metadata(decoratable, metadata)
 
         return decoratable
 

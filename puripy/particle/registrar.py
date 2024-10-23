@@ -1,6 +1,6 @@
 from itertools import chain
 
-from puripy.utils import ContainerizedUtils
+from puripy.utils.containerized_utils import get_name
 
 from .registration import ParticleRegistration, PropertiesRegistration
 
@@ -13,14 +13,14 @@ class Registrar:
     def register_particle[T](self, cls: T, name: str = "") -> None:
         registration = ParticleRegistration(
             type=cls,
-            name=ContainerizedUtils.get_name(cls, name)
+            name=get_name(cls, name)
         )
         self._register(registration)
 
     def register_properties[T](self, cls: T, path: str, prefix: str, name: str = "") -> None:
         registration = PropertiesRegistration(
             type=cls,
-            name=ContainerizedUtils.get_name(cls, name),
+            name=get_name(cls, name),
             path=path,
             prefix=prefix
         )

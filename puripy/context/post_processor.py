@@ -2,7 +2,7 @@ import asyncio
 import inspect
 
 from puripy.particle import Container
-from puripy.utils import MetadataUtils
+from puripy.utils.metadata_utils import is_afterinit
 
 
 class PostProcessor:
@@ -13,7 +13,7 @@ class PostProcessor:
     def process_after_inits(self) -> None:
         after_inits = []
         for _, instance in self._container:
-            instance_after_inits = [m for _, m in inspect.getmembers(instance) if MetadataUtils.is_afterinit(m)]
+            instance_after_inits = [m for _, m in inspect.getmembers(instance) if is_afterinit(m)]
             if len(instance_after_inits) > 1:
                 class_name = instance.__class__.__name__
                 raise RuntimeError(f"More than one after-initialization method found for '{class_name}'")

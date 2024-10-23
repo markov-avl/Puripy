@@ -7,7 +7,6 @@ from pydantic import field_validator
 from pydantic.dataclasses import dataclass
 
 from puripy.context.metadata import PropertiesMetadata, Metadata
-from puripy.utils import MetadataUtils
 
 from .decorator import classdecorator
 from .context_marker import ContextMarker

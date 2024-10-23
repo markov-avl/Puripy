@@ -2,7 +2,7 @@ from collections.abc import Callable
 from typing import final
 
 from puripy.context.metadata import DecoratorMetadata
-from puripy.utils import MetadataUtils
+from puripy.utils.metadata_utils import append_metadata
 
 
 # noinspection PyPep8Naming
@@ -14,6 +14,6 @@ class classdecorator:
 
     def __new__[C: Callable](cls, decoratable: C) -> C:
         metadata = DecoratorMetadata.of_class()
-        MetadataUtils.append_metadata(decoratable, metadata)
+        append_metadata(decoratable, metadata)
 
         return decoratable

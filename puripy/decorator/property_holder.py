@@ -9,14 +9,14 @@ from pydantic.dataclasses import dataclass
 from typing_extensions import deprecated
 
 from puripy.context.metadata import PropertiesMetadata
-from puripy.utils import MetadataUtils
+from puripy.utils.metadata_utils import append_metadata
 
 
 @deprecated("Use properties from puripy.context.marker instead")
 def property_holder[T](*args: Any, path: str = "", prefix: str = "", name: str = "") -> Callable[[type[T]], type[T]]:
     def wrapper(cls: Callable) -> type[T]:
         metadata = PropertiesMetadata(name, path, prefix)
-        MetadataUtils.append_metadata(cls, metadata)
+        append_metadata(cls, metadata)
 
         _make_inner_fields_extractable_recursively(cls)
         _make_inner_classes_as_dataclasses_recursively(cls)
