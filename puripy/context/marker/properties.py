@@ -6,19 +6,18 @@ from typing import Any, final, override
 from pydantic import field_validator
 from pydantic.dataclasses import dataclass
 
+from puripy.context.decoration import DecoratableType
 from puripy.context.metadata import PropertiesMetadata, Metadata
 
-from .decorator import classdecorator
-from .context_marker import ContextMarker
+from .marker import Marker
 
 
 # noinspection PyPep8Naming
 @final
-@classdecorator
-class properties[T: type](ContextMarker):
+class properties[T: type](Marker):
 
     def __init__(self, /, path: str = "", prefix: str = "", name: str = ""):
-        super().__init__()
+        super().__init__([DecoratableType.CLASS])
         self.__path = path
         self.__prefix = prefix
         self.__name = name

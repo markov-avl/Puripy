@@ -1,7 +1,6 @@
 from typing import Any
 
 from puripy.context.metadata import (Metadata,
-                                     DecoratorMetadata,
                                      AfterinitMetadata,
                                      BeforedelMetadata,
                                      ParticleMetadata,
@@ -35,14 +34,6 @@ def get_only_one_metadata_of_type[M: Metadata](obj: Any, metadata_type: type[M])
 
 def has_metadata_of_type[M: Metadata](obj: Any, metadata_type: type[M]) -> bool:
     return bool(get_metadata_of_type(obj, metadata_type))
-
-
-def is_class_decorator(obj: Any) -> bool:
-    return any(m.for_classes() for m in get_metadata_of_type(obj, DecoratorMetadata))
-
-
-def is_function_decorator(obj: Any) -> bool:
-    return any(m.for_functions() for m in get_metadata_of_type(obj, DecoratorMetadata))
 
 
 def is_afterinit(obj: Any) -> bool:

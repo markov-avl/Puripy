@@ -9,7 +9,7 @@ class TestBeforedel(TestCase):
     @staticmethod
     def function(): ...
 
-    @patch("puripy.context.marker.context_marker.append_metadata")
+    @patch("puripy.context.marker.marker.append_metadata")
     def test_no_args_decoration(self, append_metadata_mock: MagicMock):
         # act
         marker = beforedel()
@@ -22,7 +22,7 @@ class TestBeforedel(TestCase):
         self.assertEqual(self.function, test_function)
         self.assertEqual(beforedel, type(marker))
 
-    @patch("puripy.context.marker.context_marker.append_metadata")
+    @patch("puripy.context.marker.marker.append_metadata")
     def test_no_args_uncalled_decoration(self, append_metadata_mock: MagicMock):
         # act
         test_function = beforedel(self.function)

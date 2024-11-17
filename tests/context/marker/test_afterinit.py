@@ -9,7 +9,7 @@ class TestAfterinit(TestCase):
     @staticmethod
     def function(): ...
 
-    @patch('puripy.context.marker.context_marker.append_metadata')
+    @patch("puripy.context.marker.marker.append_metadata")
     def test_no_args_decoration(self, append_metadata_mock: MagicMock):
         # act
         marker = afterinit()
@@ -22,7 +22,7 @@ class TestAfterinit(TestCase):
         self.assertEqual(self.function, test_function)
         self.assertEqual(afterinit, type(marker))
 
-    @patch('puripy.context.marker.context_marker.append_metadata')
+    @patch("puripy.context.marker.marker.append_metadata")
     def test_no_args_uncalled_decoration(self, append_metadata_mock: MagicMock):
         # act
         test_function = afterinit(self.function)

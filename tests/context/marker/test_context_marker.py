@@ -1,8 +1,8 @@
 import re
 from unittest import TestCase
-from unittest.mock import patch, MagicMock
 
-from puripy.context.marker import ContextMarker
+from puripy.context.decoration import DecoratableType
+from puripy.context.marker import Marker
 from puripy.context.metadata import Metadata
 
 
@@ -10,45 +10,44 @@ class TestContextMarker(TestCase):
     class TestClass:
         pass
 
-    class NoArgsMarker(ContextMarker):
+    class NoArgsMarker(Marker):
+
+        def __init__(self):
+            super().__init__([DecoratableType.CLASS])
 
         def _to_metadata(self) -> Metadata: ...
 
-    class ArguedMarker(ContextMarker):
+    class ArguedMarker(Marker):
 
         def __init__(self, arg: str):
-            super().__init__()
+            super().__init__([DecoratableType.CLASS])
             self.arg = arg
 
         def _to_metadata(self) -> Metadata: ...
 
-    class DefaultArguedMarker(ContextMarker):
+    class DefaultArguedMarker(Marker):
 
         def __init__(self, arg: str = "default value"):
-            super().__init__()
+            super().__init__([DecoratableType.CLASS])
             self.arg = arg
 
         def _to_metadata(self) -> Metadata: ...
 
-    @patch("puripy.context.marker.context_marker.validate_decoratable")
-    def test_no_args_init(self, validate_decoratable_mock: MagicMock):
+    def test_no_args_init(self):
         # act
         marker = self.NoArgsMarker()
         test_class = marker(self.TestClass)
 
         # assert
-        validate_decoratable_mock.assert_not_called()
         self.assertEqual(self.NoArgsMarker, type(marker))
         self.assertEqual(self.TestClass, test_class)
 
-    @patch("puripy.context.marker.context_marker.validate_decoratable")
-    def test_no_args_init_with_callable(self, validate_decoratable_mock: MagicMock):
+    def test_no_args_init_with_callable(self):
         # act
         # noinspection PyArgumentList
         test_class = self.NoArgsMarker(self.TestClass)
 
         # assert
-        validate_decoratable_mock.assert_called_once()
         self.assertEqual(self.TestClass, test_class)
 
     def test_argued_init_with_pos_arg(self):
@@ -58,14 +57,12 @@ class TestContextMarker(TestCase):
         # act & assert
         self.assertRaisesRegex(TypeError, exception_message_regex, lambda: self.ArguedMarker("value"))
 
-    @patch("puripy.context.marker.context_marker.validate_decoratable")
-    def test_argued_init_with_kw_arg(self, validate_decoratable_mock: MagicMock):
+    def test_argued_init_with_kw_arg(self):
         # act
         marker = self.ArguedMarker(arg="value")
         test_class = marker(self.TestClass)
 
         # assert
-        validate_decoratable_mock.assert_not_called()
         self.assertEqual(self.ArguedMarker, type(marker))
         self.assertEqual(self.TestClass, test_class)
         self.assertEqual("value", marker.arg)
@@ -78,36 +75,30 @@ class TestContextMarker(TestCase):
         # noinspection PyTypeChecker
         self.assertRaisesRegex(TypeError, exception_message_regex, lambda: self.ArguedMarker(self.TestClass))
 
-    @patch("puripy.context.marker.context_marker.validate_decoratable")
-    def test_default_argued_init_with_pos_arg(self, validate_decoratable_mock: MagicMock):
+    def test_default_argued_init_with_pos_arg(self):
         # act
         marker = self.DefaultArguedMarker()
         test_class = marker(self.TestClass)
 
         # assert
-        validate_decoratable_mock.assert_not_called()
         self.assertEqual(self.DefaultArguedMarker, type(marker))
         self.assertEqual(self.TestClass, test_class)
         self.assertEqual(marker.arg, "default value")
 
-    @patch("puripy.context.marker.context_marker.validate_decoratable")
-    def test_default_argued_init_with_kw_arg(self, validate_decoratable_mock: MagicMock):
+    def test_default_argued_init_with_kw_arg(self):
         # act
         marker = self.DefaultArguedMarker(arg="value")
         test_class = marker(self.TestClass)
 
         # assert
-        validate_decoratable_mock.assert_not_called()
         self.assertEqual(self.DefaultArguedMarker, type(marker))
         self.assertEqual(self.TestClass, test_class)
         self.assertEqual("value", marker.arg)
 
-    @patch("puripy.context.marker.context_marker.validate_decoratable")
-    def test_default_argued_init_with_callable(self, validate_decoratable_mock: MagicMock):
+    def test_default_argued_init_with_callable(self):
         # act
         # noinspection PyTypeChecker
         test_class = self.DefaultArguedMarker(self.TestClass)
 
         # assert
-        validate_decoratable_mock.assert_called_once()
         self.assertEqual(self.TestClass, test_class)
