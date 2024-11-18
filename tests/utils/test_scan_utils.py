@@ -7,8 +7,8 @@
 # class TestScanUtils(TestCase):
 #
 #     def test_find_containerized(self):
-#         # Act
+#         # act
 #         particles = find_containerized({"tests.testpackage"})
 #
-#         # Assert
+#         # assert
 #         self.assertSetEqual({TestParticle, TestProperties}, particles)
