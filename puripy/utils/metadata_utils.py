@@ -17,23 +17,23 @@ def append_metadata[M: Metadata](obj: Any, metadata: M) -> None:
         setattr(obj, ATTRIBUTE_NAME, [metadata])
 
 
-def get_metadata[M: Metadata](obj: Any) -> list[M]:
+def find_metadata[M: Metadata](obj: Any) -> list[M]:
     return getattr(obj, ATTRIBUTE_NAME, [])
 
 
-def get_metadata_of_type[M: Metadata](obj: Any, metadata_type: type[M]) -> list[M]:
-    return list(filter(lambda m: isinstance(m, metadata_type), get_metadata(obj)))
+def find_metadata_of_type[M: Metadata](obj: Any, metadata_type: type[M]) -> list[M]:
+    return list(filter(lambda m: isinstance(m, metadata_type), find_metadata(obj)))
 
 
-def get_only_one_metadata_of_type[M: Metadata](obj: Any, metadata_type: type[M]) -> M:
-    metadata = get_metadata_of_type(obj, metadata_type)
+def get_exactly_one_metadata_of_type[M: Metadata](obj: Any, metadata_type: type[M]) -> M:
+    metadata = find_metadata_of_type(obj, metadata_type)
     if len(metadata) != 1:
         raise ValueError(f"Cannot extract only one metadata from {obj} of type {metadata_type}. Found: {metadata}")
     return metadata[0]
 
 
 def has_metadata_of_type[M: Metadata](obj: Any, metadata_type: type[M]) -> bool:
-    return bool(get_metadata_of_type(obj, metadata_type))
+    return bool(find_metadata_of_type(obj, metadata_type))
 
 
 def is_afterinit(obj: Any) -> bool:

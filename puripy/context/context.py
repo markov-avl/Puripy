@@ -3,7 +3,7 @@ from __future__ import annotations
 from puripy.particle import Container, Registrar, Builder
 from puripy.property import SourceParser
 from puripy.property.parser import JsonPropertyParser, YamlPropertyParser
-from puripy.utils.metadata_utils import is_particle, is_properties, get_only_one_metadata_of_type
+from puripy.utils.metadata_utils import is_particle, is_properties, get_exactly_one_metadata_of_type
 from puripy.utils.scan_utils import find_containerized
 
 from .assembler import Assembler
@@ -49,10 +49,10 @@ class Context:
     def _register_packages(self, packages: set[str]) -> None:
         for containerized in find_containerized(packages):
             if is_particle(containerized):
-                metadata = get_only_one_metadata_of_type(containerized, ParticleMetadata)
+                metadata = get_exactly_one_metadata_of_type(containerized, ParticleMetadata)
                 self._registrar.register_particle(containerized, metadata.name)
             elif is_properties(containerized):
-                metadata = get_only_one_metadata_of_type(containerized, PropertiesMetadata)
+                metadata = get_exactly_one_metadata_of_type(containerized, PropertiesMetadata)
                 self._registrar.register_properties(containerized, metadata.path, metadata.prefix, metadata.name)
 
     def _register_internals(self) -> None:
