@@ -6,20 +6,18 @@ from typing import Any, final, override
 from pydantic import field_validator
 from pydantic.dataclasses import dataclass
 
+from puripy.context.decoration import DecoratableType
 from puripy.context.metadata import PropertiesMetadata, Metadata
-from puripy.utils import MetadataUtils
 
-from .decorator import classdecorator
-from .context_marker import ContextMarker
+from .marker import Marker
 
 
 # noinspection PyPep8Naming
 @final
-@classdecorator
-class properties[T: type](ContextMarker):
+class properties[T: type](Marker):
 
     def __init__(self, /, path: str = "", prefix: str = "", name: str = ""):
-        super().__init__()
+        super().__init__([DecoratableType.CLASS])
         self.__path = path
         self.__prefix = prefix
         self.__name = name
@@ -54,7 +52,7 @@ class properties[T: type](ContextMarker):
     @staticmethod
     def __extract_env(value: Any) -> Any:
         if isinstance(value, str):
-            for match in re.finditer(r'\$\{([A-Za-z0-9_-]+)(:([^}]*))?}', value):
+            for match in re.finditer(r"\$\{([A-Za-z0-9_-]+)(:([^}]*))?}", value):
                 if (env := os.getenv(match.group(1))) is None:
                     if match.group(2) is None:
                         raise RuntimeError(f"Environment '{match.group(1)}' cannot be resolved")

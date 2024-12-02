@@ -7,6 +7,6 @@ class App(PuripyApplication):
         print("Hello world!")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # >>> Hello world!
     PuripyApplicationRunner.run(App)

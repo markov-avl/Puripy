@@ -3,14 +3,13 @@ from unittest.mock import patch, MagicMock, ANY
 
 from puripy.context.marker import beforedel
 from puripy.context.metadata import BeforedelMetadata
-from tests.patch_mocks import METADATA_UTILS_APPEND_METADATA
 
 
 class TestBeforedel(TestCase):
     @staticmethod
     def function(): ...
 
-    @patch(METADATA_UTILS_APPEND_METADATA)
+    @patch("puripy.context.marker.marker.append_metadata")
     def test_no_args_decoration(self, append_metadata_mock: MagicMock):
         # act
         marker = beforedel()
@@ -23,7 +22,7 @@ class TestBeforedel(TestCase):
         self.assertEqual(self.function, test_function)
         self.assertEqual(beforedel, type(marker))
 
-    @patch(METADATA_UTILS_APPEND_METADATA)
+    @patch("puripy.context.marker.marker.append_metadata")
     def test_no_args_uncalled_decoration(self, append_metadata_mock: MagicMock):
         # act
         test_function = beforedel(self.function)

@@ -2,7 +2,7 @@ from puripy import PuripyApplication, PuripyApplicationRunner
 from puripy.context.marker import properties
 
 
-@properties(path='.properties.yaml', prefix='example.simple')
+@properties(path=".properties.yaml", prefix="example.simple")
 class PythonEnvironmentVariables:
     python_home: str
 
@@ -16,6 +16,6 @@ class App(PuripyApplication):
         print("PYTHONHOME:", self._python_environment_variables.python_home)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # >>> PYTHONHOME: /usr/bin/python3
     PuripyApplicationRunner.run(App)

@@ -22,7 +22,7 @@ class App(PuripyApplication):
         print("Before __del__ call")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # >>> __init__ call
     # >>> After __init__ call
     # >>> Run call

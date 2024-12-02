@@ -1,4 +1,4 @@
-from .context_marker import ContextMarker
+from .marker import Marker
 
 from .afterinit import afterinit
 from .beforedel import beforedel
