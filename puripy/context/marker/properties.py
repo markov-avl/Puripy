@@ -52,7 +52,7 @@ class properties[T: type](Marker):
     @staticmethod
     def __extract_env(value: Any) -> Any:
         if isinstance(value, str):
-            for match in re.finditer(r'\$\{([A-Za-z0-9_-]+)(:([^}]*))?}', value):
+            for match in re.finditer(r"\$\{([A-Za-z0-9_-]+)(:([^}]*))?}", value):
                 if (env := os.getenv(match.group(1))) is None:
                     if match.group(2) is None:
                         raise RuntimeError(f"Environment '{match.group(1)}' cannot be resolved")

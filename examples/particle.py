@@ -22,6 +22,6 @@ class App(PuripyApplication):
         print("Held value:", self._value_holder.value)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # >>> Held value: example value
     PuripyApplicationRunner.run(App)

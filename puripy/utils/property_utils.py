@@ -5,14 +5,15 @@ PROPERTY_FILE_PATTERN: str = "properties.*"
 
 
 def find_property_files() -> list[Path]:
-    root = Path('.')
+    root = Path(".")
     return list(root.glob(PROPERTY_FILE_PATTERN))
 
 
-def get_property_file() -> Path:
+def get_property_file_path() -> Path:
     """
     :exception FileNotFoundError: If no default property file found
     """
+
     if not (paths := find_property_files()):
         raise FileNotFoundError("No default property file found")
     if len(paths) > 1:

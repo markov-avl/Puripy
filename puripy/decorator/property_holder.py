@@ -28,7 +28,7 @@ def property_holder[T](*args: Any, path: str = "", prefix: str = "", name: str =
 
 def _extract_env(value: Any):
     if isinstance(value, str):
-        for match in re.finditer(r'\$\{([A-Za-z0-9_-]+)(:([^}]*))?}', value):
+        for match in re.finditer(r"\$\{([A-Za-z0-9_-]+)(:([^}]*))?}", value):
             if (env := os.getenv(match.group(1))) is None:
                 if match.group(2) is None:
                     raise RuntimeError(f"Environment '{match.group(1)}' cannot be resolved")
@@ -39,7 +39,7 @@ def _extract_env(value: Any):
 
 def _make_inner_fields_extractable_recursively(cls: Callable):
     # noinspection PyUnresolvedReferences
-    cls.__extract__ = field_validator(*cls.__annotations__.keys(), mode='before')(_extract_env)
+    cls.__extract__ = field_validator(*cls.__annotations__.keys(), mode="before")(_extract_env)
     for value in cls.__dict__.values():
         if inspect.isclass(value):
             _make_inner_fields_extractable_recursively(value)

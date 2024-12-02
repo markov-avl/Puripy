@@ -17,7 +17,7 @@ from puripy.utils.metadata_utils import (ATTRIBUTE_NAME,
                                          is_containerized)
 
 
-class TestMetadataFunctions(TestCase):
+class TestMetadataUtils(TestCase):
 
     def test_append_metadata_1(self):
         """
@@ -180,6 +180,7 @@ class TestMetadataFunctions(TestCase):
         Tests that the ``has_metadata_of_type`` function correctly checks
         if an object has metadata of a specific type.
         """
+
         # arrange
         obj = type("TestClass", (), {})
         setattr(obj, ATTRIBUTE_NAME, [AfterinitMetadata()])
@@ -195,6 +196,7 @@ class TestMetadataFunctions(TestCase):
         Tests that the ``has_metadata_of_type`` function correctly checks
         if an object has metadata of a specific type even if there are no metadata of that type.
         """
+
         # arrange
         obj = type("TestClass", (), {})
         setattr(obj, ATTRIBUTE_NAME, [AfterinitMetadata()])
@@ -210,6 +212,7 @@ class TestMetadataFunctions(TestCase):
         Tests that the ``has_metadata_of_type`` function correctly checks
         if an object has metadata of a specific type even if there are no metadata.
         """
+
         # arrange
         obj = type("TestClass", (), {})
 

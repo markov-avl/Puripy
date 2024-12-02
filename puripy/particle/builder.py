@@ -3,7 +3,7 @@ from typing import Any, get_args
 
 from puripy.property import SourceParser
 from puripy.utils.reflection_utils import params_of
-from puripy.utils.resource_utils import get_property_file
+from puripy.utils.property_utils import get_property_file_path
 
 from .container import Container
 from .dependency import DirectDependency, GenericDependency, IndirectDependency
@@ -103,7 +103,7 @@ class Builder:
         return dependencies
 
     def _properties[T](self, registration: PropertiesRegistration[T]) -> T:
-        source = registration.path if registration.path else get_property_file().name
+        source = registration.path if registration.path else get_property_file_path().name
         source_parser = self._container.get_by_type(SourceParser)[0]
         properties = source_parser.parse(source)
 

@@ -45,8 +45,7 @@ class TestReflectionUtils(TestCase):
 
         # arrange
         # pylint: disable=unused-argument,keyword-arg-before-vararg
-        def test_function(param1, param2: str, param3=None, param4: int = 1, *args, **kwargs):
-            pass
+        def test_function(param1, param2: str, param3=None, param4: int = 1, *args, **kwargs): pass
 
         # act
         result = params_of(test_function)
@@ -84,8 +83,7 @@ class TestReflectionUtils(TestCase):
         """
 
         # arrange
-        def test_function():
-            pass
+        def test_function(): pass
 
         # act
         result = params_of(test_function)
@@ -102,8 +100,7 @@ class TestReflectionUtils(TestCase):
         # arrange
         class TestClass:
             # pylint: disable=unused-argument
-            def __init__(self, param1):
-                ...
+            def __init__(self, param1): ...
 
         # act
         result = params_of(TestClass)
@@ -120,8 +117,7 @@ class TestReflectionUtils(TestCase):
 
         # arrange
         class TestClass:
-            def __call__(self, param1):
-                ...
+            def __call__(self, param1): ...
 
         test_instance = TestClass()
 
