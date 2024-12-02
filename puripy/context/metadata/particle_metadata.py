@@ -3,6 +3,6 @@ from dataclasses import dataclass
 from .containerized_metadata import ContainerizedMetadata
 
 
-@dataclass()
+@dataclass
 class ParticleMetadata(ContainerizedMetadata):
     pass
