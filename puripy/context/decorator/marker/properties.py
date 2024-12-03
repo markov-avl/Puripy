@@ -7,7 +7,7 @@ from pydantic import field_validator
 from pydantic.dataclasses import dataclass
 
 from puripy.context.decorator import DecoratableType
-from puripy.context.metadata import PropertiesMetadata, Metadata
+from puripy.context.metadata import PropertiesMetadata
 
 from .marker import Marker
 
@@ -31,7 +31,7 @@ class properties[T: type](Marker):
         return super().__call__(dataclass(decoratable))
 
     @override
-    def _to_metadata(self) -> Metadata:
+    def _to_metadata(self) -> PropertiesMetadata:
         return PropertiesMetadata(name=self.__name, prefix=self.__prefix, path=self.__path)
 
     def __make_inner_fields_extractable_recursively(self, decoratable: T) -> None:

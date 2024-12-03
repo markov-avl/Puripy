@@ -1,11 +1,11 @@
 from pathlib import Path
 
 from puripy import PuripyApplication, PuripyApplicationRunner
-from puripy.context.decorator.marker import configurator, particle
+from puripy.context.decorator.marker import factory, particle
 
 
-@configurator
-class Configurator:
+@factory
+class Factory:
 
     @particle
     def application_name(self) -> str:
@@ -24,10 +24,10 @@ class App(PuripyApplication):
 
     async def run(self) -> None:
         print(f"Application name: {self._application_name}")
-        print(f"Application path: {self._application_path.absolute()}")
+        print(f"Application file: {self._application_path.name}")
 
 
 if __name__ == "__main__":
     # >>> Application name: Configurator example
-    # >>> Application path: <path-to-this-file>
+    # >>> Application file: factory.py
     PuripyApplicationRunner.run(App)

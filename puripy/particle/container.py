@@ -10,6 +10,7 @@ class Container:
         """
         :exception ValueError: If the particle name (ID) is already exist
         """
+
         if name in self._particles:
             raise ValueError(f"Particle name '{name}' (ID) is already exist")
         self._particles[name] = instance

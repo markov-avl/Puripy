@@ -5,7 +5,8 @@ from puripy.context.decorator import DecoratableType
 
 __DECORATABLE_VALIDATORS = {
     DecoratableType.CLASS: inspect.isclass,
-    DecoratableType.FUNCTION: inspect.isfunction
+    DecoratableType.FUNCTION: inspect.isfunction,
+    DecoratableType.METHOD: inspect.ismethod
 }
 
 

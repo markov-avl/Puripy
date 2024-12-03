@@ -2,7 +2,7 @@ from types import FunctionType
 from typing import final, override
 
 from puripy.context.decorator import DecoratableType
-from puripy.context.metadata import BeforedelMetadata, Metadata
+from puripy.context.metadata import BeforedelMetadata
 
 from .marker import Marker
 
@@ -16,5 +16,5 @@ class beforedel[T: FunctionType](Marker):
         super().__init__([DecoratableType.FUNCTION])
 
     @override
-    def _to_metadata(self) -> Metadata:
+    def _to_metadata(self) -> BeforedelMetadata:
         return BeforedelMetadata.instance()

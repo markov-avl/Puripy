@@ -1,18 +1,17 @@
-from collections.abc import Callable
+import inspect
 from types import GenericAlias
 from typing import Any, get_args
 
 from puripy.property import PropertySourceParser
-from puripy.utils.reflection_utils import params_of
 from puripy.utils.property_utils import get_property_file_path
 
 from .container import Container
 from .dependency import DirectDependency, GenericDependency, IndirectDependency
 from .registrar import Registrar
-from .registration import PropertiesRegistration, ParticleRegistration
+from .registration import PropertiesRegistration, ParticleRegistration, TemporaryRegistration
 
 _Dependency = DirectDependency | GenericDependency | IndirectDependency
-_Registration = PropertiesRegistration | ParticleRegistration
+_Registration = PropertiesRegistration | ParticleRegistration | TemporaryRegistration
 
 
 class Builder:
@@ -22,30 +21,37 @@ class Builder:
         self._registrar = registrar
 
     def build_registered(self) -> None:
+        temporaries: dict[type, Any] = {}
         for registration in self._registrar:
-            self._construct_and_save(registration)
+            self._construct_and_save(registration, temporaries)
 
-    def _construct_and_save(self, registration: _Registration) -> None:
-        if self._container.find_by_name(registration.name):
+    def _construct_and_save(self, registration: _Registration, temporaries: dict[type, Any]) -> None:
+        if isinstance(registration, TemporaryRegistration):
+            if registration.return_type in temporaries:
+                return
+        elif self._container.find_by_name(registration.name):
             return
 
         dependencies = self._get_registration_dependencies(registration)
 
         for dependency in dependencies:
             if isinstance(dependency, (DirectDependency, IndirectDependency)):
-                self._construct_and_save(dependency.registration)
+                self._construct_and_save(dependency.registration, temporaries)
             if isinstance(dependency, GenericDependency):
                 for dependency_registration in dependency.registrations:
-                    self._construct_and_save(dependency_registration)
+                    self._construct_and_save(dependency_registration, temporaries)
 
         if isinstance(registration, PropertiesRegistration):
             instance = self._properties(registration)
+            self._container.add_instance(registration.name, instance)
         elif isinstance(registration, ParticleRegistration):
-            instance = self._particle(registration, dependencies)
+            instance = self._particle(registration, dependencies, temporaries)
+            self._container.add_instance(registration.name, instance)
+        elif isinstance(registration, TemporaryRegistration):
+            temporary = self._temporary(registration, dependencies)
+            temporaries[registration.return_type] = temporary
         else:
             raise TypeError(f"Unknown registration type: {registration.__class__}")
-
-        self._container.add_instance(registration.name, instance)
 
     def _get_registration_dependencies(self, registration: _Registration) -> list[_Dependency]:
         if isinstance(registration, PropertiesRegistration):
@@ -55,13 +61,13 @@ class Builder:
                 for r in self._registrar.get_particles_of_type(PropertySourceParser)
             ]
         else:
-            dependencies = self._get_type_dependencies(registration.constructor)
+            dependencies = self._get_type_dependencies(registration.return_type, registration.params)
 
         return dependencies
 
-    def _get_type_dependencies(self, cls: type[Any]) -> list[_Dependency]:
+    def _get_type_dependencies(self, cls: type, params: list[inspect.Parameter]) -> list[_Dependency]:
         dependencies = []
-        init_parameters = {param.name: param.annotation for param in params_of(cls)}
+        init_parameters = {param.name: param.annotation for param in params}
 
         for param_name, param_annotation in init_parameters.items():
             if isinstance(param_annotation, GenericAlias):
@@ -74,12 +80,7 @@ class Builder:
                 # TODO: recursive implementation (list[list[set[Any] | set[Any])
                 for generic_type in get_args(param_annotation):
                     for registration in self._registrar:
-                        if isinstance(registration.return_type, GenericAlias) and \
-                                isinstance(registration.return_type, Callable):
-                            return_type = registration.return_type.__args__[1]
-                        else:
-                            return_type = registration.return_type
-                        if issubclass(return_type, generic_type):
+                        if issubclass(registration.return_type, generic_type):
                             registrations.append(registration)
 
                 dependencies.append(GenericDependency(
@@ -91,8 +92,11 @@ class Builder:
                 registrations = {}
 
                 for registration in self._registrar:
-                    if issubclass(registration.constructor, param_annotation):
-                        registrations[registration.name] = registration
+                    if issubclass(registration.return_type, param_annotation):
+                        if isinstance(registration, TemporaryRegistration):
+                            registrations[param_name] = registration
+                        else:
+                            registrations[registration.name] = registration
 
                 if not registrations:
                     raise RuntimeError(f"No matching dependencies found for {cls}: {param_name}[{param_annotation}]")
@@ -120,7 +124,26 @@ class Builder:
 
         return registration.constructor(**properties)
 
-    def _particle[T](self, registration: ParticleRegistration[T], dependencies: list[_Dependency]) -> T:
+    def _particle[T](self,
+                     registration: ParticleRegistration[T],
+                     dependencies: list[_Dependency],
+                     temporaries: dict[type, Any]) -> T:
+        kwargs = {}
+
+        for dependency in dependencies:
+            if isinstance(dependency, DirectDependency):
+                kwargs[dependency.param_name] = temporaries.get(dependency.registration.return_type) or \
+                                                self._container.find_by_name(dependency.registration.name)
+            elif isinstance(dependency, GenericDependency):
+                injects = [
+                    temporaries.get(r.return_type) or self._container.find_by_name(r.name)
+                    for r in dependency.registrations
+                ]
+                kwargs[dependency.param_name] = dependency.generic_type(injects)
+
+        return registration.constructor(**kwargs)
+
+    def _temporary[T](self, registration: TemporaryRegistration[T], dependencies: list[_Dependency]) -> T:
         kwargs = {}
 
         for dependency in dependencies:

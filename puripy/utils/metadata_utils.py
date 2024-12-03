@@ -3,7 +3,7 @@ from typing import Any
 from puripy.context.metadata import (Metadata,
                                      AfterinitMetadata,
                                      BeforedelMetadata,
-                                     ConfiguratorMetadata,
+                                     FactoryMetadata,
                                      ParticleMetadata,
                                      PropertiesMetadata,
                                      ContainerizedMetadata)
@@ -45,8 +45,8 @@ def is_beforedel(obj: Any) -> bool:
     return has_metadata_of_type(obj, BeforedelMetadata)
 
 
-def is_configurator(obj: Any) -> bool:
-    return has_metadata_of_type(obj, ConfiguratorMetadata)
+def is_factory(obj: Any) -> bool:
+    return has_metadata_of_type(obj, FactoryMetadata)
 
 
 def is_particle(obj: Any) -> bool:

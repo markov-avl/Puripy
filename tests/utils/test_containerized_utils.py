@@ -84,8 +84,8 @@ class TestContainerizedUtils(TestCase):
 
     def test_has_incorrect_annotations_1(self):
         """
-        Tests that the ``has_incorrect_annotations`` function returns ``True`` when the provided callable
-        has string annotations.
+        Tests that the ``has_incorrect_annotations`` function returns ``True``
+        when the provided callable has string annotations.
         """
 
         # arrange
@@ -99,8 +99,8 @@ class TestContainerizedUtils(TestCase):
 
     def test_has_incorrect_annotations_2(self):
         """
-        Tests that the ``has_incorrect_annotations`` function returns ``True`` when the provided callable
-        has empty annotations.
+        Tests that the ``has_incorrect_annotations`` function returns ``True``
+        when the provided callable has empty annotations.
         """
 
         # arrange
@@ -114,8 +114,8 @@ class TestContainerizedUtils(TestCase):
 
     def test_has_incorrect_annotations_3(self):
         """
-        Tests that the ``has_incorrect_annotations`` function returns ``False`` when the provided callable
-        has correct annotations (non-string and non-empty).
+        Tests that the ``has_incorrect_annotations`` function returns ``False``
+        when the provided callable has correct annotations (non-string and non-empty).
         """
 
         # arrange
@@ -129,8 +129,8 @@ class TestContainerizedUtils(TestCase):
 
     def test_has_incorrect_annotations_4(self):
         """
-        Tests that the ``has_incorrect_annotations`` function returns ``False`` when the provided callable
-        has no parameters.
+        Tests that the ``has_incorrect_annotations`` function returns ``False``
+        when the provided callable has no parameters.
         """
 
         # arrange
@@ -144,8 +144,8 @@ class TestContainerizedUtils(TestCase):
 
     def test_has_incorrect_annotations_5(self):
         """
-        Tests that the ``has_incorrect_annotations`` function returns ``True`` when the provided callable
-        has a mix of correct and incorrect annotations.
+        Tests that the ``has_incorrect_annotations`` function returns ``True``
+        when the provided callable has a mix of correct and incorrect annotations.
         """
 
         # arrange
@@ -159,8 +159,8 @@ class TestContainerizedUtils(TestCase):
 
     def test_has_string_annotations_1(self):
         """
-        Tests that the ``has_string_annotations`` function returns ``True`` when the provided callable
-        has string annotations.
+        Tests that the ``has_string_annotations`` function returns ``True``
+        when the provided callable has string annotations.
         """
 
         # arrange
@@ -174,8 +174,8 @@ class TestContainerizedUtils(TestCase):
 
     def test_has_string_annotations_2(self):
         """
-        Tests that the ``has_string_annotations`` function returns ``False`` when the provided callable
-        does not have string annotations.
+        Tests that the ``has_string_annotations`` function returns ``False``
+        when the provided callable does not have string annotations.
         """
 
         # arrange
@@ -189,8 +189,8 @@ class TestContainerizedUtils(TestCase):
 
     def test_has_string_annotations_3(self):
         """
-        Tests that the ``has_string_annotations`` function returns ``False`` when the provided callable
-        has no parameters.
+        Tests that the ``has_string_annotations`` function returns ``False``
+        when the provided callable has no parameters.
         """
 
         # arrange
@@ -204,8 +204,8 @@ class TestContainerizedUtils(TestCase):
 
     def test_has_string_annotations_4(self):
         """
-        Tests that the ``has_string_annotations`` function returns ``True`` when the provided callable
-        has a mix of string and non-string annotations.
+        Tests that the ``has_string_annotations`` function returns ``True``
+        when the provided callable has a mix of string and non-string annotations.
         """
 
         # arrange
@@ -219,8 +219,8 @@ class TestContainerizedUtils(TestCase):
 
     def test_has_empty_annotations_1(self):
         """
-        Tests that the ``has_empty_annotations`` function returns ``True`` when the provided callable
-        has empty annotations.
+        Tests that the ``has_empty_annotations`` function returns ``True``
+        when the provided callable has empty annotations.
         """
 
         # arrange
@@ -234,8 +234,8 @@ class TestContainerizedUtils(TestCase):
 
     def test_has_empty_annotations_2(self):
         """
-        Tests that the ``has_empty_annotations`` function returns ``False`` when the provided callable
-        does not have empty annotations.
+        Tests that the ``has_empty_annotations`` function returns ``False``
+        when the provided callable does not have empty annotations.
         """
 
         # arrange
@@ -249,8 +249,8 @@ class TestContainerizedUtils(TestCase):
 
     def test_has_empty_annotations_3(self):
         """
-        Tests that the ``has_empty_annotations`` function returns ``False`` when the provided callable
-        has no parameters.
+        Tests that the ``has_empty_annotations`` function returns ``False``
+        when the provided callable has no parameters.
         """
 
         # arrange
@@ -264,8 +264,8 @@ class TestContainerizedUtils(TestCase):
 
     def test_has_empty_annotations_4(self):
         """
-        Tests that the ``has_empty_annotations`` function returns ``True`` when the provided callable
-        has a mix of empty and non-empty annotations.
+        Tests that the ``has_empty_annotations`` function returns ``True``
+        when the provided callable has a mix of empty and non-empty annotations.
         """
 
         # arrange
@@ -276,3 +276,69 @@ class TestContainerizedUtils(TestCase):
 
         # assert
         self.assertTrue(result)
+
+    def test_has_empty_annotations_5(self):
+        """
+        Tests that the ``has_empty_annotations`` function returns ``False``
+        when the provided callable is a method.
+        """
+
+        # arrange
+        class TestClass:
+            def test_func(self): ...
+
+        # act
+        result = has_empty_annotations(TestClass.test_func)
+
+        # assert
+        self.assertFalse(result)
+
+    def test_has_empty_annotations_6(self):
+        """
+        Tests that the ``has_empty_annotations`` function returns ``False``
+        when the provided callable is a method of instance.
+        """
+
+        # arrange
+        class TestClass:
+            def test_func(self): ...
+
+        # act
+        result = has_empty_annotations(TestClass().test_func)
+
+        # assert
+        self.assertFalse(result)
+
+    def test_has_empty_annotations_7(self):
+        """
+        Tests that the ``has_empty_annotations`` function returns ``False``
+        when the provided callable is a class method.
+        """
+
+        # arrange
+        class TestClass:
+            @classmethod
+            def test_func(cls): ...
+
+        # act
+        result = has_empty_annotations(TestClass.test_func)
+
+        # assert
+        self.assertFalse(result)
+
+    def test_has_empty_annotations_8(self):
+        """
+        Tests that the ``has_empty_annotations`` function returns ``False``
+        when the provided callable is a class method of instance.
+        """
+
+        # arrange
+        class TestClass:
+            @classmethod
+            def test_func(cls): ...
+
+        # act
+        result = has_empty_annotations(TestClass().test_func)
+
+        # assert
+        self.assertFalse(result)

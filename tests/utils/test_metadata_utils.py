@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from puripy.context.metadata import (AfterinitMetadata,
                                      BeforedelMetadata,
-                                     ConfiguratorMetadata,
+                                     FactoryMetadata,
                                      ParticleMetadata,
                                      PropertiesMetadata)
 from puripy.utils.metadata_utils import (ATTRIBUTE_NAME,
@@ -13,7 +13,7 @@ from puripy.utils.metadata_utils import (ATTRIBUTE_NAME,
                                          has_metadata_of_type,
                                          is_afterinit,
                                          is_beforedel,
-                                         is_configurator,
+                                         is_factory,
                                          is_particle,
                                          is_properties,
                                          is_containerized)
@@ -235,7 +235,7 @@ class TestMetadataUtils(TestCase):
         test_cases = {
             (AfterinitMetadata, ()): [is_afterinit],
             (BeforedelMetadata, ()): [is_beforedel],
-            (ConfiguratorMetadata, ()): [is_configurator],
+            (FactoryMetadata, ()): [is_factory],
             (ParticleMetadata, ("",)): [is_particle, is_containerized],
             (PropertiesMetadata, ("", "", "")): [is_properties, is_containerized]
         }
@@ -266,7 +266,7 @@ class TestMetadataUtils(TestCase):
         is_metadata_checkers = [
             is_afterinit,
             is_beforedel,
-            is_configurator,
+            is_factory,
             is_particle,
             is_properties,
             is_containerized
@@ -293,7 +293,7 @@ class TestMetadataUtils(TestCase):
         metadata = [
             AfterinitMetadata(),
             BeforedelMetadata(),
-            ConfiguratorMetadata(),
+            FactoryMetadata(),
             ParticleMetadata(name=""),
             PropertiesMetadata(name="", path="", prefix="")
         ]
@@ -301,7 +301,7 @@ class TestMetadataUtils(TestCase):
         is_metadata_checkers = [
             is_afterinit,
             is_beforedel,
-            is_configurator,
+            is_factory,
             is_particle,
             is_properties,
             is_containerized
