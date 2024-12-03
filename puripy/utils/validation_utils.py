@@ -1,7 +1,7 @@
 import inspect
 from collections.abc import Callable
 
-from puripy.context.decoration import DecoratableType
+from puripy.context.decorator import DecoratableType
 
 __DECORATABLE_VALIDATORS = {
     DecoratableType.CLASS: inspect.isclass,

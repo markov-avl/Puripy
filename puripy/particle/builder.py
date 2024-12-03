@@ -1,7 +1,8 @@
+from collections.abc import Callable
 from types import GenericAlias
 from typing import Any, get_args
 
-from puripy.property import SourceParser
+from puripy.property import PropertySourceParser
 from puripy.utils.reflection_utils import params_of
 from puripy.utils.property_utils import get_property_file_path
 
@@ -48,11 +49,13 @@ class Builder:
 
     def _get_registration_dependencies(self, registration: _Registration) -> list[_Dependency]:
         if isinstance(registration, PropertiesRegistration):
-            dependencies = [IndirectDependency(
-                registration=next(filter(lambda r: issubclass(r.type, SourceParser), self._registrar.get_particles()))
-            )]
+            # properties are dependent only on property source parsers
+            dependencies = [
+                IndirectDependency(registration=r)
+                for r in self._registrar.get_particles_of_type(PropertySourceParser)
+            ]
         else:
-            dependencies = self._get_type_dependencies(registration.type)
+            dependencies = self._get_type_dependencies(registration.constructor)
 
         return dependencies
 
@@ -68,10 +71,15 @@ class Builder:
 
                 registrations = []
 
-                # TODO: recursive realization (list[list[set[Any] | set[Any])
+                # TODO: recursive implementation (list[list[set[Any] | set[Any])
                 for generic_type in get_args(param_annotation):
                     for registration in self._registrar:
-                        if issubclass(registration.type, generic_type):
+                        if isinstance(registration.return_type, GenericAlias) and \
+                                isinstance(registration.return_type, Callable):
+                            return_type = registration.return_type.__args__[1]
+                        else:
+                            return_type = registration.return_type
+                        if issubclass(return_type, generic_type):
                             registrations.append(registration)
 
                 dependencies.append(GenericDependency(
@@ -83,7 +91,7 @@ class Builder:
                 registrations = {}
 
                 for registration in self._registrar:
-                    if issubclass(registration.type, param_annotation):
+                    if issubclass(registration.constructor, param_annotation):
                         registrations[registration.name] = registration
 
                 if not registrations:
@@ -104,13 +112,13 @@ class Builder:
 
     def _properties[T](self, registration: PropertiesRegistration[T]) -> T:
         source = registration.path if registration.path else get_property_file_path().name
-        source_parser = self._container.get_by_type(SourceParser)[0]
+        source_parser = self._container.get_by_type(PropertySourceParser)[0]
         properties = source_parser.parse(source)
 
         for prefix_path in filter(None, registration.prefix.split(".")):
             properties = properties[prefix_path]
 
-        return registration.type(**properties)
+        return registration.constructor(**properties)
 
     def _particle[T](self, registration: ParticleRegistration[T], dependencies: list[_Dependency]) -> T:
         kwargs = {}
@@ -122,4 +130,4 @@ class Builder:
                 injects = [self._container.get_by_name(r.name) for r in dependency.registrations]
                 kwargs[dependency.param_name] = dependency.generic_type(injects)
 
-        return registration.type(**kwargs)
+        return registration.constructor(**kwargs)

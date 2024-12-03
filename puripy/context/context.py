@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from puripy.particle import Container, Registrar, Builder
-from puripy.property import SourceParser
+from puripy.property import PropertySourceParser
 from puripy.property.parser import JsonPropertyParser, YamlPropertyParser
 from puripy.utils.metadata_utils import is_particle, is_properties, get_exactly_one_metadata_of_type
 from puripy.utils.scan_utils import find_containerized
@@ -58,4 +58,4 @@ class Context:
     def _register_internals(self) -> None:
         self._registrar.register_particle(JsonPropertyParser)
         self._registrar.register_particle(YamlPropertyParser)
-        self._registrar.register_particle(SourceParser)
+        self._registrar.register_particle(PropertySourceParser)

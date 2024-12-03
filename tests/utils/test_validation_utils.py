@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from puripy.context.decoration import DecoratableType
+from puripy.context.decorator import DecoratableType
 from puripy.utils.validation_utils import is_valid_decoratable
 
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import abstractmethod, ABC
 from collections.abc import Callable
 
-from puripy.context.decoration import DecoratableType
+from puripy.context.decorator import DecoratableType
 from puripy.context.metadata import Metadata
 from puripy.utils.metadata_utils import append_metadata
 from puripy.utils.validation_utils import is_valid_decoratable

@@ -6,7 +6,7 @@ from typing import Any, final, override
 from pydantic import field_validator
 from pydantic.dataclasses import dataclass
 
-from puripy.context.decoration import DecoratableType
+from puripy.context.decorator import DecoratableType
 from puripy.context.metadata import PropertiesMetadata, Metadata
 
 from .marker import Marker

@@ -1,4 +1,4 @@
 from .context import Context
 
-from . import marker
+from .decorator import marker
 from . import metadata

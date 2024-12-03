@@ -1,7 +1,7 @@
 from types import FunctionType
 from typing import final, override
 
-from puripy.context.decoration import DecoratableType
+from puripy.context.decorator import DecoratableType
 from puripy.context.metadata import BeforedelMetadata, Metadata
 
 from .marker import Marker

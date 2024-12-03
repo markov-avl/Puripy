@@ -4,8 +4,8 @@ from typing import override
 from unittest import TestCase
 from unittest.mock import patch
 
-from puripy.context.decoration import DecoratableType
-from puripy.context.marker import particle
+from puripy.context.decorator import DecoratableType
+from puripy.context.decorator.marker import particle
 from puripy.context.metadata import ParticleMetadata
 
 
@@ -13,10 +13,10 @@ class TestParticle(TestCase):
 
     @override
     def setUp(self):
-        self.is_valid_decoratable_patcher = patch("puripy.context.marker.marker.is_valid_decoratable")
-        self.append_metadata_patcher = patch("puripy.context.marker.marker.append_metadata")
-        self.has_string_annotations_patcher = patch("puripy.context.marker.particle.has_string_annotations")
-        self.has_empty_annotations_patcher = patch("puripy.context.marker.particle.has_empty_annotations")
+        self.is_valid_decoratable_patcher = patch("puripy.context.decorator.marker.marker.is_valid_decoratable")
+        self.append_metadata_patcher = patch("puripy.context.decorator.marker.marker.append_metadata")
+        self.has_string_annotations_patcher = patch("puripy.context.decorator.marker.particle.has_string_annotations")
+        self.has_empty_annotations_patcher = patch("puripy.context.decorator.marker.particle.has_empty_annotations")
 
         self.is_valid_decoratable_mock = self.is_valid_decoratable_patcher.start()
         self.append_metadata_mock = self.append_metadata_patcher.start()
@@ -119,7 +119,7 @@ class TestParticle(TestCase):
         # act & assert
         self.assertRaisesRegex(RuntimeError, exception_message_regex, lambda: particle()(test_class))
 
-    def test_only_as_class_decorator(self):
+    def test_as_class_and_function_decorator(self):
         # arrange
         test_class = type("TestClass", (), {})
 
@@ -127,4 +127,7 @@ class TestParticle(TestCase):
         particle()(test_class)
 
         # assert
-        self.is_valid_decoratable_mock.assert_called_once_with(test_class, [DecoratableType.CLASS])
+        self.is_valid_decoratable_mock.assert_called_once_with(
+            test_class,
+            [DecoratableType.CLASS, DecoratableType.FUNCTION]
+        )
