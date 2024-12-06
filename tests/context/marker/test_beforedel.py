@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import patch, MagicMock, ANY
 
-from puripy.context.decorator.marker import beforedel
+from puripy.marker import beforedel
 from puripy.context.metadata import BeforedelMetadata
 
 

@@ -5,7 +5,7 @@ from unittest import TestCase
 from unittest.mock import patch
 
 from puripy.context.decorator import DecoratableType
-from puripy.context.decorator.marker import particle
+from puripy.marker import particle
 from puripy.context.metadata import ParticleMetadata
 
 

@@ -2,7 +2,7 @@ import re
 from unittest import TestCase
 
 from puripy.context.decorator import DecoratableType
-from puripy.context.decorator.marker import Marker
+from puripy.marker import Marker
 from puripy.context.metadata import Metadata
 
 

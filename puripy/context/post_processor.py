@@ -1,8 +1,9 @@
 import asyncio
 import inspect
 
-from puripy.particle import Container
 from puripy.utils.metadata_utils import is_afterinit
+
+from .container import Container
 
 
 class PostProcessor:

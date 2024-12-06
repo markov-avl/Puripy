@@ -4,7 +4,7 @@ from .registration import Registration
 
 
 @dataclass
-class PropertiesRegistration[T](Registration[T]):
+class PropertiesRegistration(Registration):
     name: str
     path: str
     prefix: str

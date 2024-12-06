@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import patch, MagicMock, ANY
 
-from puripy.context.decorator.marker import afterinit
+from puripy.marker import afterinit
 from puripy.context.metadata import AfterinitMetadata
 
 

@@ -4,5 +4,5 @@ from .registration import Registration
 
 
 @dataclass
-class ParticleRegistration[T](Registration[T]):
-    name: str
+class TemporaryRegistration(Registration):
+    pass

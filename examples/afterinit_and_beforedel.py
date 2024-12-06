@@ -1,5 +1,5 @@
 from puripy import PuripyApplication, PuripyApplicationRunner
-from puripy.context.decorator.marker import afterinit, beforedel
+from puripy.marker import afterinit, beforedel
 
 
 class App(PuripyApplication):

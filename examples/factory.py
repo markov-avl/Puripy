@@ -1,30 +1,32 @@
 from pathlib import Path
 
 from puripy import PuripyApplication, PuripyApplicationRunner
-from puripy.context.decorator.marker import factory, particle
+from puripy.marker import factory, particle, properties
+
+
+@properties(path=".properties.yaml", prefix="example.env-or-default")
+class PythonEnvironmentVariables:
+    python_home: str
 
 
 @factory
 class Factory:
 
-    @particle
-    def application_name(self) -> str:
-        return "Configurator example"
+    def __init__(self, python_environment_variables: PythonEnvironmentVariables):
+        self._python_environment_variables = python_environment_variables
 
     @particle
-    def application_path(self) -> Path:
-        return Path(__file__)
+    def python_path(self) -> Path:
+        return Path(self._python_environment_variables.python_home)
 
 
 class App(PuripyApplication):
 
-    def __init__(self, application_name: str, application_path: Path):
-        self._application_name = application_name
-        self._application_path = application_path
+    def __init__(self, python_path: Path):
+        self._python_path = python_path
 
     async def run(self) -> None:
-        print(f"Application name: {self._application_name}")
-        print(f"Application file: {self._application_path.name}")
+        print(f"This application : {self._python_path}")
 
 
 if __name__ == "__main__":

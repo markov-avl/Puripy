@@ -2,7 +2,7 @@ from sys import modules
 from unittest import TestCase
 from unittest.mock import patch, call
 
-from puripy.property.parser import PropertyParser, JsonPropertyParser, YamlPropertyParser
+from puripy.context.property import PropertyParser, JsonPropertyParser, YamlPropertyParser
 from puripy.utils.scan_utils import find_containerized
 
 

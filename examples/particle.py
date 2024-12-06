@@ -1,5 +1,5 @@
 from puripy import PuripyApplication, PuripyApplicationRunner
-from puripy.context.decorator.marker import particle
+from puripy.marker import particle
 
 
 @particle
