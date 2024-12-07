@@ -1,10 +1,9 @@
 from dataclasses import dataclass
 
-from .registration import Registration
+from .containerized_registration import ContainerizedRegistration
 
 
 @dataclass
-class PropertiesRegistration(Registration):
-    name: str
+class PropertiesRegistration(ContainerizedRegistration):
     path: str
     prefix: str

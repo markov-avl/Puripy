@@ -1,9 +1,8 @@
 from itertools import chain
 from types import FunctionType
 
-from puripy.context.dependency.type import Dependency, ParameterDependency
-
-from puripy.context.registration import ParticleRegistration, PropertiesRegistration, TemporaryRegistration
+from .dependency import Dependency, ParameterDependency
+from .registration import ParticleRegistration, PropertiesRegistration, TemporaryRegistration
 
 _DependencyType = Dependency | ParameterDependency
 _RegistrationType = ParticleRegistration | PropertiesRegistration | TemporaryRegistration

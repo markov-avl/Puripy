@@ -1,12 +1,13 @@
 from dataclasses import dataclass
 from types import GenericAlias
+from typing import Any
 
 
 @dataclass
 class Dependency:
     is_direct: bool
-    type: type
+    annotation: Any
 
     @property
     def is_generic(self) -> bool:
-        return isinstance(self.type, GenericAlias)
+        return isinstance(self.annotation, GenericAlias)

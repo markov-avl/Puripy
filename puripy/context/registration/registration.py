@@ -9,4 +9,4 @@ from puripy.context.dependency import Dependency, ParameterDependency
 class Registration(ABC):
     constructor: Any
     dependencies: list[Dependency | ParameterDependency]
-    return_type: type
+    return_type: Any

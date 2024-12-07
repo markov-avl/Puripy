@@ -60,8 +60,8 @@ class AnnotationComparator:
             return True
 
         # check for issubclass relationship if applicable
-        if isinstance(type1, type) and isinstance(type2, type) and issubclass(type1, type2):
-            return True
+        if isinstance(type1, type) and isinstance(type2, type):
+            return issubclass(type1, type2)
 
         supported_origins = self.__supported_generic_origins()
         if (origin1 := get_origin(type1)) not in supported_origins:

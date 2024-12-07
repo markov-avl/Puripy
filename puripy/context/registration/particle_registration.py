@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
-from .registration import Registration
+from .containerized_registration import ContainerizedRegistration
 
 
 @dataclass
-class ParticleRegistration(Registration):
-    name: str
+class ParticleRegistration(ContainerizedRegistration):
+    pass

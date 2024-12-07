@@ -26,10 +26,9 @@ class App(PuripyApplication):
         self._python_path = python_path
 
     async def run(self) -> None:
-        print(f"This application : {self._python_path}")
+        print(f"Path to python home: {self._python_path}")
 
 
 if __name__ == "__main__":
-    # >>> Application name: Configurator example
-    # >>> Application file: factory.py
+    # >>> Path to python home: /usr/bin/python3
     PuripyApplicationRunner.run(App)

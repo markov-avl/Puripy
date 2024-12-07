@@ -1,24 +1,17 @@
 from __future__ import annotations
 
-from typing_extensions import LiteralString
-
-from .builder import Builder
-from .registrar import Registrar
-from .container import Container
-from puripy.context.property import PropertySourceReader
-from puripy.context.property import JsonPropertyParser, YamlPropertyParser
 from puripy.utils.containerized_utils import get_name
 from puripy.utils.metadata_utils import is_particle, is_properties, get_exactly_one_metadata_of_type
-from puripy.utils.reflection_utils import params_of, return_type_of
+from puripy.utils.reflection_utils import return_type_of
 from puripy.utils.scan_utils import find_containerized, find_factories
 
 from .assembler import Assembler
-from .dependency import DependencyResolver
-from puripy.context.annotation.comparator import AnnotationComparator
-from puripy.context.annotation.comparator.generic import CollectionAnnotationComparator, UnionAnnotationComparator
+from .container import Container
+from .dependency_resolver import DependencyResolver
 from .metadata import ParticleMetadata, PropertiesMetadata
 from .post_processor import PostProcessor
 from .pre_processor import PreProcessor
+from .registrar import Registrar
 from .scanning_packages_resolver import ScanningPackagesResolver
 
 
@@ -27,6 +20,7 @@ class Context:
     def __init__(self):
         self.__container = Container()
         self.__registrar = Registrar()
+        self.__dependency_resolver = DependencyResolver()
         self.__assembler = Assembler(self.__container, self.__registrar)
         self.__scanning_packages_resolver = ScanningPackagesResolver()
 
@@ -41,7 +35,7 @@ class Context:
     def initialize[T](self, application_type: type[T]) -> T:
         self.__registrar.register_particle(
             constructor=application_type,
-            dependencies=params_of(application_type),
+            dependencies=self.__dependency_resolver.get_dependencies(application_type),
             return_type=return_type_of(application_type),
             name=get_name(application_type)
         )
@@ -63,19 +57,17 @@ class Context:
         for factory in find_factories(packages):
             self.__registrar.register_temporary(
                 constructor=factory,
-                dependencies=params_of(factory),
+                dependencies=self.__dependency_resolver.get_dependencies(factory),
                 return_type=return_type_of(factory)
             )
 
             for member in factory.__dict__.values():
                 if is_particle(member):
                     metadata = get_exactly_one_metadata_of_type(member, ParticleMetadata)
-                    params = params_of(member)
-                    params[0] = params[0].replace(annotation=factory)
                     return_type = return_type_of(member)
                     self.__registrar.register_particle(
                         constructor=member,
-                        dependencies=params,
+                        dependencies=self.__dependency_resolver.get_dependencies(member, factory),
                         return_type=return_type,
                         name=get_name(return_type, metadata.name)
                     )
@@ -86,7 +78,7 @@ class Context:
                 metadata = get_exactly_one_metadata_of_type(containerized, ParticleMetadata)
                 self.__registrar.register_particle(
                     constructor=containerized,
-                    dependencies=params_of(containerized),
+                    dependencies=self.__dependency_resolver.get_dependencies(containerized),
                     return_type=return_type,
                     name=get_name(return_type, metadata.name)
                 )
@@ -94,7 +86,7 @@ class Context:
                 metadata = get_exactly_one_metadata_of_type(containerized, PropertiesMetadata)
                 self.__registrar.register_properties(
                     constructor=containerized,
-                    dependencies=params_of(containerized),
+                    dependencies=self.__dependency_resolver.get_dependencies(containerized),
                     return_type=return_type,
                     name=get_name(return_type, metadata.name),
                     path=metadata.path,
