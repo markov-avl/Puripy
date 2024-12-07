@@ -27,8 +27,8 @@ class Assembler:
 
     def __initialize_internals(self) -> None:
         # annotation comparator
-        self.__annotation_comparator.add_generic_annotation_comparator(CollectionAnnotationHandler())
-        self.__annotation_comparator.add_generic_annotation_comparator(UnionAnnotationHandler())
+        self.__annotation_comparator.add_generic_annotation_handler(CollectionAnnotationHandler())
+        self.__annotation_comparator.add_generic_annotation_handler(UnionAnnotationHandler())
         self.__annotation_comparator.add_equivalent_types(str, LiteralString)
         # property source parser
         self.__property_source_reader.add_parser(JsonPropertyParser())

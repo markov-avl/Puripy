@@ -7,17 +7,17 @@ from .handler import GenericAnnotationHandler
 class AnnotationComparator:
 
     def __init__(self):
-        self.__generic_annotation_comparators: list[GenericAnnotationHandler] = []
+        self.__generic_annotation_handlers: list[GenericAnnotationHandler] = []
         self.__equivalent_types: dict[Any, list[Any]] = {}
 
-    def add_generic_annotation_comparator(self, comparator: GenericAnnotationHandler) -> None:
+    def add_generic_annotation_handler(self, comparator: GenericAnnotationHandler) -> None:
         """
         Adds a handler for handler comparison.
 
         :param comparator: The comparator to handle handler type comparisons.
         """
 
-        self.__generic_annotation_comparators.append(comparator)
+        self.__generic_annotation_handlers.append(comparator)
 
     def add_equivalent_types(self, base_type: Any, *equivalents: Any) -> None:
         """
@@ -59,18 +59,20 @@ class AnnotationComparator:
         if self.is_equals(type1, type2):
             return True
 
+        origin1, origin2 = get_origin(type1), get_origin(type2)
+
         # check for issubclass relationship if applicable
-        if isinstance(type1, type) and isinstance(type2, type):
+        if isinstance(type1, type) and isinstance(type2, type) and origin1 is None and origin2 is None:
             return issubclass(type1, type2)
 
         supported_origins = self.__supported_generic_origins()
-        if (origin1 := get_origin(type1)) and origin1 not in supported_origins:
+        if origin1 and origin1 not in supported_origins:
             raise RuntimeError(f"Unsupported dependency handler type: {origin1}")
-        if (origin2 := get_origin(type2)) and origin2 not in supported_origins:
+        if origin2 and origin2 not in supported_origins:
             raise RuntimeError(f"Unsupported dependency handler type: {origin2}")
 
-        # check through handler comparators
-        return any(c.is_subtype(type1, type2, self) for c in self.__generic_annotation_comparators)
+        # check through handlers
+        return any(c.is_subtype(type1, type2, self) for c in self.__generic_annotation_handlers)
 
     def __supported_generic_origins(self) -> list[Any]:
-        return list(chain.from_iterable(c.origins() for c in self.__generic_annotation_comparators))
+        return list(chain.from_iterable(c.origins() for c in self.__generic_annotation_handlers))
