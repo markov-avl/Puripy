@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Any
 
 
-class GenericAnnotationComparator(ABC):
+class GenericAnnotationHandler(ABC):
 
     @classmethod
     @abstractmethod

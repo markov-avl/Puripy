@@ -1,6 +1,5 @@
 from inspect import Parameter
 
-from puripy.context.property import PropertySourceReader
 from puripy.utils.metadata_utils import is_properties
 from puripy.utils.reflection_utils import params_of
 
@@ -28,7 +27,6 @@ class DependencyResolver:
     @staticmethod
     def __to_parameter_dependency(parameter: Parameter) -> ParameterDependency:
         return ParameterDependency(
-            is_direct=True,
             annotation=parameter.annotation,
-            parameter_name=parameter.name
+            name=parameter.name
         )

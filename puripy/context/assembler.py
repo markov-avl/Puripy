@@ -1,7 +1,7 @@
 from typing import LiteralString
 
 from .annotation.comparator import AnnotationComparator
-from .annotation.comparator.generic import CollectionAnnotationComparator, UnionAnnotationComparator
+from .annotation.comparator.handler import CollectionAnnotationHandler, UnionAnnotationHandler
 from .builder import Builder
 from .container import Container
 from .property import PropertySourceReader
@@ -27,8 +27,8 @@ class Assembler:
 
     def __initialize_internals(self) -> None:
         # annotation comparator
-        self.__annotation_comparator.add_generic_annotation_comparator(CollectionAnnotationComparator())
-        self.__annotation_comparator.add_generic_annotation_comparator(UnionAnnotationComparator())
+        self.__annotation_comparator.add_generic_annotation_comparator(CollectionAnnotationHandler())
+        self.__annotation_comparator.add_generic_annotation_comparator(UnionAnnotationHandler())
         self.__annotation_comparator.add_equivalent_types(str, LiteralString)
         # property source parser
         self.__property_source_reader.add_parser(JsonPropertyParser())

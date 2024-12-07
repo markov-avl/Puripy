@@ -8,13 +8,17 @@ from .dependency import ParameterDependency
 from .property import PropertySourceReader
 from .registrar import Registrar
 from .registration import (ContainerizedRegistration,
-                           PropertiesRegistration,
                            ParticleRegistration,
+                           PropertiesRegistration,
                            TemporaryRegistration,
                            Registration)
 
+_RegistrationType = ParticleRegistration | PropertiesRegistration | TemporaryRegistration
+
 
 class Builder:
+    # FIXME: get rid of hardcode (set, frozenset, list)
+    __SUPPORTED_WRAPPERS = {set, frozenset, list}
 
     def __init__(self,
                  container: Container,
@@ -38,8 +42,12 @@ class Builder:
             return
 
         for dependency in registration.dependencies:
-            r = self.__find_exactly_one_dependency_registration(dependency)
-            self._construct_and_save(r, temporaries)
+            registry = self.__get_dependency_registrations(dependency)
+            if isinstance(registry, list):
+                for r in registry:
+                    self._construct_and_save(r, temporaries)
+            else:
+                self._construct_and_save(registry, temporaries)
 
         if isinstance(registration, PropertiesRegistration):
             properties = self.__build_properties(registration)
@@ -60,9 +68,9 @@ class Builder:
             if not isinstance(dependency, ParameterDependency):
                 continue
             try:
-                kwargs[dependency.parameter_name] = self.__get_dependency_value(dependency, temporaries)
+                kwargs[dependency.name] = self.__get_dependency_value(dependency, temporaries)
             except Exception as e:
-                raise RuntimeError(f"Cannot obtain dependency value for '{registration.constructor}'", e)
+                raise RuntimeError(f"Cannot obtain dependency value for '{registration.constructor}'") from e
 
         return registration.constructor(**kwargs)
 
@@ -82,49 +90,59 @@ class Builder:
             if not isinstance(dependency, ParameterDependency):
                 continue
             try:
-                kwargs[dependency.parameter_name] = self.__get_dependency_value(dependency, {})
+                kwargs[dependency.name] = self.__get_dependency_value(dependency, {})
             except Exception as e:
-                raise RuntimeError(f"Cannot obtain dependency value for '{registration.constructor}'", e)
+                raise RuntimeError(f"Cannot obtain dependency value for '{registration.constructor}'") from e
 
         return registration.constructor(**kwargs)
 
     def __get_dependency_value(self, dependency: ParameterDependency, temporaries: dict[type, Any]) -> Any:
-        if origin := get_origin(dependency.annotation):
-            # FIXME: get rid of hardcode (set, frozenset, list)
-            if origin in (set, frozenset, list):
-                if args := get_args(dependency.annotation):
-                    return origin(self.__container.get_by_type(args[0]))
-
-                raise RuntimeError(
-                    f"Too broad dependency annotation for '{dependency.parameter_name}': {dependency.annotation}"
-                )
-
-            raise RuntimeError(f"Unsupported dependency wrapper for '{dependency.parameter_name}': {origin}")
-
         try:
-            registration = self.__find_exactly_one_dependency_registration(dependency)
+            registry = self.__get_dependency_registrations(dependency)
         except Exception as e:
-            raise RuntimeError(f"Cannot find dependency registration for '{dependency.parameter_name}'", e)
+            raise RuntimeError(f"Cannot find dependency registration(s) for '{dependency.name}'") from e
 
-        if isinstance(registration, ContainerizedRegistration):
-            return self.__container.get_by_name(registration.name)
+        if isinstance(registry, list):
+            origin = get_origin(dependency.annotation)
+            return origin(self.__container.get_by_name(r.name) for r in registry)
 
-        return temporaries.get(registration.return_type)
+        if isinstance(registry, ContainerizedRegistration):
+            return self.__container.get_by_name(registry.name)
 
-    def __find_exactly_one_dependency_registration(self, dependency: ParameterDependency) -> Registration:
+        return temporaries.get(registry.return_type)
+
+    def __find_registrations(self, annotation: Any) -> list[_RegistrationType]:
+        return [
+            r for r in self.__registrar
+            if self.__annotation_comparator.is_subtype(r.return_type, annotation)
+        ]
+
+    def __get_dependency_registration(self, dependency: ParameterDependency) -> _RegistrationType:
         registrations = {
-            dependency.parameter_name if isinstance(r, TemporaryRegistration) else r.name: r
-            for r in self.__registrar
-            if self.__annotation_comparator.is_subtype(r.return_type, dependency.annotation)
+            dependency.name if isinstance(r, TemporaryRegistration) else r.name: r
+            for r in self.__find_registrations(dependency.annotation)
         }
 
         if not registrations:
-            raise RuntimeError(f"No matching registrations found for parameter '{dependency.parameter_name}'")
+            raise RuntimeError(f"No matching registrations found for parameter '{dependency.name}'")
         if len(registrations) == 1:
             return list(registrations.values())[0]
-        if dependency.parameter_name in registrations:
-            return registrations[dependency.parameter_name]
+        if dependency.name in registrations:
+            return registrations[dependency.name]
 
         raise RuntimeError(
-            f"Multiple matching registrations found for parameter '{dependency.parameter_name}': {registrations}"
+            f"Multiple matching registrations found for parameter '{dependency.name}': {registrations}"
         )
+
+    def __get_dependency_registrations(self,
+                                       dependency: ParameterDependency) -> _RegistrationType | list[_RegistrationType]:
+        try:
+            return self.__get_dependency_registration(dependency)
+        except RuntimeError as e:
+            if not dependency.is_generic():
+                raise e
+            if not (origin := get_origin(dependency.annotation)) in self.__SUPPORTED_WRAPPERS:
+                raise RuntimeError(f"Unsupported generic wrapper type for '{dependency.name}': {origin}")
+            if not (args := get_args(dependency.annotation)):
+                raise RuntimeError(f"Too broad dependency annotation for '{dependency.name}': {origin}")
+            return self.__find_registrations(args[0])

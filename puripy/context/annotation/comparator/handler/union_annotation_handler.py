@@ -1,10 +1,10 @@
 from functools import cache
 from typing import override, Any, get_origin, get_args, Union
 
-from .generic_annotation_comparator import GenericAnnotationComparator
+from .generic_annotation_handler import GenericAnnotationHandler
 
 
-class UnionAnnotationComparator(GenericAnnotationComparator):
+class UnionAnnotationHandler(GenericAnnotationHandler):
 
     @classmethod
     @cache

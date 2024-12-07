@@ -1,20 +1,20 @@
 from itertools import chain
 from typing import Any, get_origin
 
-from .generic import GenericAnnotationComparator
+from .handler import GenericAnnotationHandler
 
 
 class AnnotationComparator:
 
     def __init__(self):
-        self.__generic_annotation_comparators: list[GenericAnnotationComparator] = []
+        self.__generic_annotation_comparators: list[GenericAnnotationHandler] = []
         self.__equivalent_types: dict[Any, list[Any]] = {}
 
-    def add_generic_annotation_comparator(self, comparator: GenericAnnotationComparator) -> None:
+    def add_generic_annotation_comparator(self, comparator: GenericAnnotationHandler) -> None:
         """
-        Adds a handler for generic comparison.
+        Adds a handler for handler comparison.
 
-        :param comparator: The comparator to handle generic type comparisons.
+        :param comparator: The comparator to handle handler type comparisons.
         """
 
         self.__generic_annotation_comparators.append(comparator)
@@ -64,13 +64,13 @@ class AnnotationComparator:
             return issubclass(type1, type2)
 
         supported_origins = self.__supported_generic_origins()
-        if (origin1 := get_origin(type1)) not in supported_origins:
-            raise RuntimeError(f"Unsupported dependency generic type: {origin1}")
-        if (origin2 := get_origin(type2)) not in supported_origins:
-            raise RuntimeError(f"Unsupported dependency generic type: {origin2}")
+        if (origin1 := get_origin(type1)) and origin1 not in supported_origins:
+            raise RuntimeError(f"Unsupported dependency handler type: {origin1}")
+        if (origin2 := get_origin(type2)) and origin2 not in supported_origins:
+            raise RuntimeError(f"Unsupported dependency handler type: {origin2}")
 
-        # check through generic comparators
+        # check through handler comparators
         return any(c.is_subtype(type1, type2, self) for c in self.__generic_annotation_comparators)
 
     def __supported_generic_origins(self) -> list[Any]:
-        return chain.from_iterable(c.origins() for c in self.__generic_annotation_comparators)
+        return list(chain.from_iterable(c.origins() for c in self.__generic_annotation_comparators))

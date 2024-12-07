@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from copyreg import constructor
+
 from puripy.utils.containerized_utils import get_name
 from puripy.utils.metadata_utils import is_particle, is_properties, get_exactly_one_metadata_of_type
 from puripy.utils.reflection_utils import return_type_of
@@ -69,7 +71,7 @@ class Context:
                         constructor=member,
                         dependencies=self.__dependency_resolver.get_dependencies(member, factory),
                         return_type=return_type,
-                        name=get_name(return_type, metadata.name)
+                        name=get_name(member, metadata.name)
                     )
 
         for containerized in find_containerized(packages):

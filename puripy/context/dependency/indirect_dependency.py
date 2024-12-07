@@ -4,5 +4,5 @@ from .dependency import Dependency
 
 
 @dataclass
-class ParameterDependency(Dependency):
-    name: str
+class IndirectDependency(Dependency):
+    pass
