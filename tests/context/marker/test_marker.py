@@ -6,7 +6,7 @@ from puripy.marker import Marker
 from puripy.context.metadata import Metadata
 
 
-class TestContextMarker(TestCase):
+class TestMarker(TestCase):
     class TestClass:
         pass
 

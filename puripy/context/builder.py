@@ -1,3 +1,5 @@
+import asyncio
+import inspect
 from typing import Any, get_args, get_origin
 
 from puripy.utils.property_utils import get_property_file_path
@@ -36,6 +38,10 @@ class Builder:
             self._construct_and_save(registration, temporaries)
 
     def _construct_and_save(self, registration: Registration, temporaries: dict[type, Any]) -> None:
+        # TODO: should be moved to validator
+        if any(d.annotation == inspect.Parameter.empty for d in registration.dependencies):
+            raise RuntimeError(f"{registration.constructor} has unknown-type dependencies. Annotate all params.")
+
         if isinstance(registration, ContainerizedRegistration) and self.__container.find_by_name(registration.name):
             return
         if registration.return_type in temporaries:
@@ -71,6 +77,10 @@ class Builder:
                 kwargs[dependency.name] = self.__get_dependency_value(dependency, temporaries)
             except Exception as e:
                 raise RuntimeError(f"Cannot obtain dependency value for '{registration.constructor}'") from e
+
+        if inspect.iscoroutinefunction(registration.constructor):
+            loop = asyncio.get_event_loop()
+            return loop.run_until_complete(registration.constructor(**kwargs))
 
         return registration.constructor(**kwargs)
 

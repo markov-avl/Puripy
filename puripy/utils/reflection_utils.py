@@ -19,13 +19,13 @@ def defined_name(obj: Any) -> str:
     return obj.__class__.__name__
 
 
-def has_incorrect_annotations(obj: Callable) -> bool:
-    return has_string_annotations(obj) or has_empty_annotations(obj)
-
-
 def has_string_annotations(obj: Callable) -> bool:
     return any(isinstance(param.annotation, str) for param in params_of(obj))
 
 
-def has_empty_annotations(obj: Callable) -> bool:
-    return any(param.annotation is inspect.Parameter.empty for param in params_of(obj))
+def is_hashable(obj):
+    try:
+        hash(obj)
+    except TypeError:
+        return False
+    return True
