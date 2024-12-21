@@ -1,42 +1,10 @@
 import inspect
 from unittest import TestCase
 
-from puripy.utils.reflection_utils import is_defined_in_any, params_of
+from puripy.utils.reflection_utils import params_of, return_type_of, defined_name, has_string_annotations, is_hashable
 
 
 class TestReflectionUtils(TestCase):
-
-    def test_is_defined_in_any_1(self):
-        """
-        Tests that the ``is_defined_in_any`` function returns ``True``
-        when the module name starts with any of the packages.
-        """
-
-        # arrange
-        module_name = "package1.subpackage.module"
-        packages = {"package1", "package2"}
-
-        # act
-        result = is_defined_in_any(module_name, packages)
-
-        # assert
-        self.assertTrue(result)
-
-    def test_is_defined_in_any_2(self):
-        """
-        Tests that the ``is_defined_in_any`` function returns ``False``
-        when the module name does not start with any of the packages.
-        """
-
-        # arrange
-        module_name = "package3.subpackage.module"
-        packages = {"package1", "package2"}
-
-        # act
-        result = is_defined_in_any(module_name, packages)
-
-        # assert
-        self.assertFalse(result)
 
     def test_params_of_1(self):
         """
@@ -45,7 +13,8 @@ class TestReflectionUtils(TestCase):
 
         # arrange
         # pylint: disable=unused-argument,keyword-arg-before-vararg
-        def test_function(param1, param2: str, param3=None, param4: int = 1, *args, **kwargs): pass
+        # noinspection PyUnusedLocal
+        def test_function(param1, param2: str, param3=None, param4: int = 1, *args, **kwargs): ...
 
         # act
         result = params_of(test_function)
@@ -100,6 +69,7 @@ class TestReflectionUtils(TestCase):
         # arrange
         class TestClass:
             # pylint: disable=unused-argument
+            # noinspection PyUnusedLocal
             def __init__(self, param1): ...
 
         # act
@@ -117,6 +87,7 @@ class TestReflectionUtils(TestCase):
 
         # arrange
         class TestClass:
+            # noinspection PyUnusedLocal
             def __call__(self, param1): ...
 
         test_instance = TestClass()
@@ -127,3 +98,215 @@ class TestReflectionUtils(TestCase):
         # assert
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0].name, "param1")
+
+    def test_return_type_of_1(self):
+        """
+        Tests that `return_type_of` returns the correct return annotation of a function.
+        """
+
+        # arrange
+        def test_function() -> int: ...
+
+        # act
+        result = return_type_of(test_function)
+
+        # assert
+        self.assertEqual(result, int)
+
+    def test_return_type_of_2(self):
+        """
+        Tests that `return_type_of` returns the object itself if it is a class.
+        """
+
+        # arrange
+        class TestClass: ...
+
+        # act
+        result = return_type_of(TestClass)
+
+        # assert
+        self.assertEqual(result, TestClass)
+
+    def test_return_type_of_3(self):
+        """
+        Tests that `return_type_of` returns `inspect.Parameter.empty` if no return annotation is provided.
+        """
+
+        # arrange
+        def test_function(): ...
+
+        # act
+        result = return_type_of(test_function)
+
+        # assert
+        self.assertEqual(result, inspect.Parameter.empty)
+
+    def test_return_type_of_4(self):
+        """
+        Tests that `return_type_of` correctly handles callable objects.
+        """
+
+        # arrange
+        class TestClass:
+            def __call__(self) -> str: ...
+
+        test_instance = TestClass()
+
+        # act
+        result = return_type_of(test_instance)
+
+        # assert
+        self.assertEqual(result, str)
+
+    def test_defined_name_1(self):
+        """
+        Tests that `defined_name` returns the name of a class.
+        """
+
+        # arrange
+        class TestClass: ...
+
+        # act
+        result = defined_name(TestClass)
+
+        # assert
+        self.assertEqual(result, "TestClass")
+
+    def test_defined_name_2(self):
+        """
+        Tests that `defined_name` returns the name of a function.
+        """
+
+        # arrange
+        def test_function(): ...
+
+        # act
+        result = defined_name(test_function)
+
+        # assert
+        self.assertEqual(result, "test_function")
+
+    def test_defined_name_3(self):
+        """
+        Tests that `defined_name` returns the qualified name of a method.
+        """
+
+        # arrange
+        class TestClass:
+            def method(self): ...
+
+        # act
+        result = defined_name(TestClass.method)
+
+        # assert
+        self.assertEqual(result, "method")
+
+    def test_defined_name_4(self):
+        """
+        Tests that `defined_name` returns the class name of an instance.
+        """
+
+        # arrange
+        class TestClass: ...
+
+        test_instance = TestClass()
+
+        # act
+        result = defined_name(test_instance)
+
+        # assert
+        self.assertEqual(result, "TestClass")
+
+    def test_has_string_annotations_1(self):
+        """
+        Tests that the ``has_string_annotations`` function returns ``True``
+        when the provided callable has string annotations.
+        """
+
+        # arrange
+        # pylint: disable=unused-argument
+        # noinspection PyUnusedLocal
+        def test_function(param: "str"): ...
+
+        # act
+        result = has_string_annotations(test_function)
+
+        # assert
+        self.assertTrue(result)
+
+    def test_has_string_annotations_2(self):
+        """
+        Tests that the ``has_string_annotations`` function returns ``False``
+        when the provided callable does not have string annotations.
+        """
+
+        # arrange
+        # pylint: disable=unused-argument
+        # noinspection PyUnusedLocal
+        def test_function(param: int): ...
+
+        # act
+        result = has_string_annotations(test_function)
+
+        # assert
+        self.assertFalse(result)
+
+    def test_has_string_annotations_3(self):
+        """
+        Tests that the ``has_string_annotations`` function returns ``False``
+        when the provided callable has no parameters.
+        """
+
+        # arrange
+        def test_function(): ...
+
+        # act
+        result = has_string_annotations(test_function)
+
+        # assert
+        self.assertFalse(result)
+
+    def test_has_string_annotations_4(self):
+        """
+        Tests that the ``has_string_annotations`` function returns ``True``
+        when the provided callable has a mix of string and non-string annotations.
+        """
+
+        # arrange
+        # pylint: disable=unused-argument
+        # noinspection PyUnusedLocal
+        def test_function(param1: int, param2: "str"): ...
+
+        # act
+        result = has_string_annotations(test_function)
+
+        # assert
+        self.assertTrue(result)
+
+    def test_is_hashable_1(self):
+        """
+        Tests that ``is_hashable`` returns True for hashable types.
+        """
+
+        # arrange
+        obj = 42  # Integer is hashable
+
+        # act
+        result = is_hashable(obj)
+
+        # assert
+        self.assertTrue(result)
+
+    def test_is_hashable_2(self):
+        """
+        Tests that ``is_hashable`` returns False for unhashable types.
+        """
+
+        # arrange
+        obj = [1, 2, 3]
+
+        # act
+        result = is_hashable(obj)
+
+        # assert
+        self.assertFalse(result)

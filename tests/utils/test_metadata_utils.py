@@ -2,6 +2,7 @@ from unittest import TestCase
 
 from puripy.context.metadata import (AfterinitMetadata,
                                      BeforedelMetadata,
+                                     FactoryMetadata,
                                      ParticleMetadata,
                                      PropertiesMetadata)
 from puripy.utils.metadata_utils import (ATTRIBUTE_NAME,
@@ -12,6 +13,7 @@ from puripy.utils.metadata_utils import (ATTRIBUTE_NAME,
                                          has_metadata_of_type,
                                          is_afterinit,
                                          is_beforedel,
+                                         is_factory,
                                          is_particle,
                                          is_properties,
                                          is_containerized)
@@ -224,15 +226,16 @@ class TestMetadataUtils(TestCase):
 
     def test_is_metadata_of_type_1(self):
         """
-        Tests that the metadata check functions (``is_afterinit``, ``is_beforedel``, ``is_particle``,
-        ``is_properties``, ``is_containerized``) correctly identify the presence of their respective
-        metadata types in an object.
+        Tests that the metadata check functions (``is_afterinit``, ``is_beforedel``,
+        ``is_configurator``, ``is_particle``, ``is_properties``, ``is_containerized``)
+        correctly identify the presence of their respective metadata types in an object.
         """
 
         # arrange
         test_cases = {
             (AfterinitMetadata, ()): [is_afterinit],
             (BeforedelMetadata, ()): [is_beforedel],
+            (FactoryMetadata, ()): [is_factory],
             (ParticleMetadata, ("",)): [is_particle, is_containerized],
             (PropertiesMetadata, ("", "", "")): [is_properties, is_containerized]
         }
@@ -252,14 +255,22 @@ class TestMetadataUtils(TestCase):
 
     def test_is_metadata_of_type_2(self):
         """
-        Tests that the metadata check functions (``is_afterinit``, ``is_beforedel``, ``is_particle``,
-        ``is_properties``, ``is_containerized``) correctly identify the presence of their respective
-        metadata types in an object even if there are no metadata.
+        Tests that the metadata check functions (``is_afterinit``, ``is_beforedel``,
+        ``is_configurator``, ``is_particle``, ``is_properties``, ``is_containerized``)
+        correctly identify the presence of their respective metadata types in an object
+        even if there are no metadata.
         """
 
         # arrange
         obj = type("TestClass", (), {})
-        is_metadata_checkers = [is_afterinit, is_beforedel, is_particle, is_properties, is_containerized]
+        is_metadata_checkers = [
+            is_afterinit,
+            is_beforedel,
+            is_factory,
+            is_particle,
+            is_properties,
+            is_containerized
+        ]
 
         for is_metadata in is_metadata_checkers:
             with self.subTest(is_metadata=is_metadata.__name__):
@@ -271,9 +282,10 @@ class TestMetadataUtils(TestCase):
 
     def test_is_metadata_of_type_3(self):
         """
-        Tests that the metadata check functions (``is_afterinit``, ``is_beforedel``, ``is_particle``,
-        ``is_properties``, ``is_containerized``) correctly identify the presence of their respective
-        metadata types in an object even if there are multiple types of metadata.
+        Tests that the metadata check functions (``is_afterinit``, ``is_beforedel``,
+        ``is_configurator``, ``is_particle``, ``is_properties``, ``is_containerized``)
+        correctly identify the presence of their respective metadata types in an object
+        even if there are multiple types of metadata.
         """
 
         # arrange
@@ -281,11 +293,19 @@ class TestMetadataUtils(TestCase):
         metadata = [
             AfterinitMetadata(),
             BeforedelMetadata(),
+            FactoryMetadata(),
             ParticleMetadata(name=""),
             PropertiesMetadata(name="", path="", prefix="")
         ]
         setattr(obj, ATTRIBUTE_NAME, metadata)
-        is_metadata_checkers = [is_afterinit, is_beforedel, is_particle, is_properties, is_containerized]
+        is_metadata_checkers = [
+            is_afterinit,
+            is_beforedel,
+            is_factory,
+            is_particle,
+            is_properties,
+            is_containerized
+        ]
 
         for is_metadata in is_metadata_checkers:
             with self.subTest(is_metadata=is_metadata.__name__):

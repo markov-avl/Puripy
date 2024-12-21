@@ -1,5 +1,5 @@
 from puripy import PuripyApplication, PuripyApplicationRunner
-from puripy.context.marker import particle
+from puripy.marker import particle
 
 
 @particle
@@ -19,7 +19,7 @@ class App(PuripyApplication):
         self._value_holder = value_holder
 
     async def run(self) -> None:
-        print("Held value:", self._value_holder.value)
+        print(f"Held value: {self._value_holder.value}")
 
 
 if __name__ == "__main__":

@@ -1,61 +1,96 @@
 from __future__ import annotations
 
-from puripy.particle import Container, Registrar, Builder
-from puripy.property import SourceParser
-from puripy.property.parser import JsonPropertyParser, YamlPropertyParser
+from copyreg import constructor
+
+from puripy.utils.containerized_utils import get_name
 from puripy.utils.metadata_utils import is_particle, is_properties, get_exactly_one_metadata_of_type
-from puripy.utils.scan_utils import find_containerized
+from puripy.utils.reflection_utils import return_type_of
+from puripy.utils.scan_utils import find_containerized, find_factories
 
 from .assembler import Assembler
+from .container import Container
+from .dependency_resolver import DependencyResolver
 from .metadata import ParticleMetadata, PropertiesMetadata
 from .post_processor import PostProcessor
 from .pre_processor import PreProcessor
+from .registrar import Registrar
+from .scanning_packages_resolver import ScanningPackagesResolver
 
 
 class Context:
 
     def __init__(self):
-        self._container = Container()
-        self._registrar = Registrar()
-        self._builder = Builder(self._container, self._registrar)
+        self.__container = Container()
+        self.__registrar = Registrar()
+        self.__dependency_resolver = DependencyResolver()
+        self.__assembler = Assembler(self.__container, self.__registrar)
+        self.__scanning_packages_resolver = ScanningPackagesResolver()
 
     @property
     def container(self) -> Container:
-        return self._container
+        return self.__container
 
     @property
     def registrar(self) -> Registrar:
-        return self._registrar
+        return self.__registrar
 
     def initialize[T](self, application_type: type[T]) -> T:
-        self._register_internals()
-        self._registrar.register_particle(application_type)
+        self.__registrar.register_particle(
+            constructor=application_type,
+            dependencies=self.__dependency_resolver.get_dependencies(application_type),
+            return_type=return_type_of(application_type),
+            name=get_name(application_type)
+        )
 
-        acceptable_packages = {application_type.__module__.rsplit(".", 1)[0]}
-        self._register_packages(acceptable_packages)
+        scanning_packages = self.__scanning_packages_resolver.get_packages(application_type)
+        self.__register_all_from_packages(scanning_packages)
+        self.__assembler.assemble()
 
-        assembler = Assembler(self._builder)
-        assembler.assemble()
-
-        post_processor = PostProcessor(self._container)
+        post_processor = PostProcessor(self.__container)
         post_processor.process_after_inits()
 
-        return self._container.get_by_type(application_type)[0]
+        return self.__container.get_by_type(application_type)[0]
 
     def destroy(self) -> None:
-        pre_processor = PreProcessor(self._container)
+        pre_processor = PreProcessor(self.__container)
         pre_processor.process_before_dels()
 
-    def _register_packages(self, packages: set[str]) -> None:
+    def __register_all_from_packages(self, packages: set[str]) -> None:
+        for factory in find_factories(packages):
+            self.__registrar.register_temporary(
+                constructor=factory,
+                dependencies=self.__dependency_resolver.get_dependencies(factory),
+                return_type=return_type_of(factory)
+            )
+
+            for member in factory.__dict__.values():
+                if is_particle(member):
+                    metadata = get_exactly_one_metadata_of_type(member, ParticleMetadata)
+                    return_type = return_type_of(member)
+                    self.__registrar.register_particle(
+                        constructor=member,
+                        dependencies=self.__dependency_resolver.get_dependencies(member, factory),
+                        return_type=return_type,
+                        name=get_name(member, metadata.name)
+                    )
+
         for containerized in find_containerized(packages):
+            return_type = return_type_of(containerized)
             if is_particle(containerized):
                 metadata = get_exactly_one_metadata_of_type(containerized, ParticleMetadata)
-                self._registrar.register_particle(containerized, metadata.name)
+                self.__registrar.register_particle(
+                    constructor=containerized,
+                    dependencies=self.__dependency_resolver.get_dependencies(containerized),
+                    return_type=return_type,
+                    name=get_name(return_type, metadata.name)
+                )
             elif is_properties(containerized):
                 metadata = get_exactly_one_metadata_of_type(containerized, PropertiesMetadata)
-                self._registrar.register_properties(containerized, metadata.path, metadata.prefix, metadata.name)
-
-    def _register_internals(self) -> None:
-        self._registrar.register_particle(JsonPropertyParser)
-        self._registrar.register_particle(YamlPropertyParser)
-        self._registrar.register_particle(SourceParser)
+                self.__registrar.register_properties(
+                    constructor=containerized,
+                    dependencies=self.__dependency_resolver.get_dependencies(containerized),
+                    return_type=return_type,
+                    name=get_name(return_type, metadata.name),
+                    path=metadata.path,
+                    prefix=metadata.prefix
+                )

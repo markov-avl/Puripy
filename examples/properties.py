@@ -1,5 +1,5 @@
 from puripy import PuripyApplication, PuripyApplicationRunner
-from puripy.context.marker import properties
+from puripy.marker import properties
 
 
 @properties(path=".properties.yaml", prefix="example.simple")
