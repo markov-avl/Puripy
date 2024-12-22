@@ -8,7 +8,7 @@ from puripy.marker import dependsonproperty
 from puripy.context.metadata import DependsonpropertyMetadata
 
 
-class TestParticle(TestCase):
+class TestDependsonproperty(TestCase):
 
     @override
     def setUp(self):
