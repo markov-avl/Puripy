@@ -1,3 +1,5 @@
+from typing import override
+
 from puripy import PuripyApplication, PuripyApplicationRunner
 from puripy.marker import afterinit, beforedel
 
@@ -10,6 +12,7 @@ class App(PuripyApplication):
     def __del__(self):
         print("__del__ call")
 
+    @override
     def run(self) -> None:
         print("Run call")
 
@@ -18,7 +21,7 @@ class App(PuripyApplication):
         print("After __init__ call")
 
     @beforedel
-    async def before_del(self) -> None:
+    def before_del(self) -> None:
         print("Before __del__ call")
 
 

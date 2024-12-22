@@ -5,3 +5,6 @@ example:
     python_home: ${PYTHONHOME}
   env-or-default:
     python_home: ${PYTHONHOME:/usr/bin/python3}
+
+number-handler:
+  type: mul
