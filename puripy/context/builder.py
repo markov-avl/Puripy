@@ -2,11 +2,13 @@ import asyncio
 import inspect
 from typing import Any, get_args, get_origin
 
+from puripy.utils.metadata_utils import find_metadata_of_type
 from puripy.utils.property_utils import get_property_file_path
 
 from .annotation.comparator import AnnotationComparator
 from .container import Container
 from .dependency import ParameterDependency
+from .metadata import DependsonpropertyMetadata
 from .property import PropertySourceReader
 from .registrar import Registrar
 from .registration import (ContainerizedRegistration,
@@ -38,9 +40,8 @@ class Builder:
             self._construct_and_save(registration, temporaries)
 
     def _construct_and_save(self, registration: Registration, temporaries: dict[type, Any]) -> None:
-        # TODO: should be moved to validator
-        if any(d.annotation == inspect.Parameter.empty for d in registration.dependencies):
-            raise RuntimeError(f"{registration.constructor} has unknown-type dependencies. Annotate all params.")
+        if not self.__are_conditions_met(registration):
+            return
 
         if isinstance(registration, ContainerizedRegistration) and self.__container.find_by_name(registration.name):
             return
@@ -67,6 +68,34 @@ class Builder:
         else:
             raise TypeError(f"Unknown registration type: {registration.__class__}")
 
+    # FIXME: definitely not the builder's area of responsibility
+    def __are_conditions_met(self, registration: Registration) -> bool:
+        depends_on_property = find_metadata_of_type(registration.constructor, DependsonpropertyMetadata)
+        for condition in depends_on_property:
+            source = condition.path if condition.path else get_property_file_path().name
+            value = self.__get_property_by_key(source, condition.key)
+            if value is None:
+                return condition.match_on_missing
+            if value != condition.value:
+                return False
+
+        # FIXME: should be moved to validator
+        if any(d.annotation == inspect.Parameter.empty for d in registration.dependencies):
+            raise RuntimeError(f"{registration.constructor} has unknown-type dependencies. Annotate all params.")
+
+        return True
+
+    # FIXME: definitely not the builder's area of responsibility
+    def __get_property_by_key(self, source: str, key: str) -> Any | None:
+        properties = self.__property_source_reader.read(source)
+
+        for key_path in filter(None, key.split(".")):
+            if key_path not in properties:
+                return None
+            properties = properties[key_path]
+
+        return properties
+
     def __build_particle(self, registration: ParticleRegistration, temporaries: dict[type, Any]) -> Any:
         kwargs = {}
 
@@ -86,10 +115,11 @@ class Builder:
 
     def __build_properties(self, registration: PropertiesRegistration) -> Any:
         source = registration.path if registration.path else get_property_file_path().name
-        properties = self.__property_source_reader.read(source)
 
-        for prefix_path in filter(None, registration.prefix.split(".")):
-            properties = properties[prefix_path]
+        if (properties := self.__get_property_by_key(source, registration.prefix)) is None:
+            raise RuntimeError(
+                f"Cannot obtain properties for '{registration.constructor}' with prefix '{registration.prefix}'"
+            )
 
         return registration.constructor(**properties)
 
@@ -131,6 +161,7 @@ class Builder:
         registrations = {
             dependency.name if isinstance(r, TemporaryRegistration) else r.name: r
             for r in self.__find_registrations(dependency.annotation)
+            if self.__are_conditions_met(r)
         }
 
         if not registrations:
@@ -140,9 +171,7 @@ class Builder:
         if dependency.name in registrations:
             return registrations[dependency.name]
 
-        raise RuntimeError(
-            f"Multiple matching registrations found for parameter '{dependency.name}': {registrations}"
-        )
+        raise RuntimeError(f"Multiple matching registrations found for parameter '{dependency.name}': {registrations}")
 
     def __get_dependency_registrations(self,
                                        dependency: ParameterDependency) -> _RegistrationType | list[_RegistrationType]:

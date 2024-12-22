@@ -1,3 +1,5 @@
+from typing import override
+
 from puripy import PuripyApplication, PuripyApplicationRunner
 from puripy.marker import properties
 
@@ -12,6 +14,7 @@ class App(PuripyApplication):
     def __init__(self, python_environment_variables: PythonEnvironmentVariables):
         self._python_environment_variables = python_environment_variables
 
+    @override
     async def run(self) -> None:
         print("PYTHONHOME:", self._python_environment_variables.python_home)
 

@@ -1,8 +1,11 @@
+from typing import override
+
 from puripy import PuripyApplication, PuripyApplicationRunner
 from puripy.marker import particle, factory
 
 
 class Symbol:
+
     def __init__(self, character: str):
         self._character = character
 
@@ -32,6 +35,7 @@ class App(PuripyApplication):
         self._symbol_list = symbol_list
         self._symbol_set = symbol_set
 
+    @override
     def run(self):
         print(f"List of injected symbols: {self._symbol_list}")
         print(f"Set of injected symbols: {self._symbol_set}")
