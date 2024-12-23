@@ -1,5 +1,5 @@
 from .reusable_metadata import ReusableMetadata
 
 
-class BeforedelMetadata(ReusableMetadata):
+class AfterInitMetadata(ReusableMetadata):
     pass

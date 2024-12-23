@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from puripy.context.metadata import BeforedelMetadata
+from puripy.context.metadata import BeforeDelMetadata
 
 
 class TestBeforedelMetadata(TestCase):
@@ -11,8 +11,8 @@ class TestBeforedelMetadata(TestCase):
         """
 
         # act
-        first = BeforedelMetadata()
-        second = BeforedelMetadata()
+        first = BeforeDelMetadata()
+        second = BeforeDelMetadata()
 
         # assert
         self.assertNotEqual(first, second)
@@ -23,8 +23,8 @@ class TestBeforedelMetadata(TestCase):
         """
 
         # act
-        first = BeforedelMetadata.instance()
-        second = BeforedelMetadata.instance()
+        first = BeforeDelMetadata.instance()
+        second = BeforeDelMetadata.instance()
 
         # assert
         self.assertEqual(first, second)
@@ -35,9 +35,9 @@ class TestBeforedelMetadata(TestCase):
         """
 
         # act
-        instanced = BeforedelMetadata.instance()
-        constructed_first = BeforedelMetadata()
-        constructed_second = BeforedelMetadata()
+        instanced = BeforeDelMetadata.instance()
+        constructed_first = BeforeDelMetadata()
+        constructed_second = BeforeDelMetadata()
 
         # assert
         self.assertNotEqual(instanced, constructed_first)
@@ -51,8 +51,8 @@ class TestBeforedelMetadata(TestCase):
         """
 
         # act
-        constructed = BeforedelMetadata()
-        instanced = BeforedelMetadata.instance()
+        constructed = BeforeDelMetadata()
+        instanced = BeforeDelMetadata.instance()
 
         # assert
         self.assertEqual(constructed, instanced)

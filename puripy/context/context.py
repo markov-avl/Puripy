@@ -24,7 +24,6 @@ class Context:
         self.__registrar = Registrar()
         self.__dependency_resolver = DependencyResolver()
         self.__assembler = Assembler(self.__container, self.__registrar)
-        self.__scanning_packages_resolver = ScanningPackagesResolver()
 
     @property
     def container(self) -> Container:
@@ -42,7 +41,7 @@ class Context:
             name=get_name(application_type)
         )
 
-        scanning_packages = self.__scanning_packages_resolver.get_packages(application_type)
+        scanning_packages = ScanningPackagesResolver.of(application_type)
         self.__register_all_from_packages(scanning_packages)
         self.__assembler.assemble()
 

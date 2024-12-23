@@ -4,7 +4,7 @@ from unittest import TestCase
 from unittest.mock import patch, ANY
 
 from puripy.marker import beforedel
-from puripy.context.metadata import BeforedelMetadata
+from puripy.context.metadata import BeforeDelMetadata
 
 
 class TestBeforedel(TestCase):
@@ -34,7 +34,7 @@ class TestBeforedel(TestCase):
 
         # assert
         self.append_metadata_mock.assert_called_once_with(test_function, ANY)
-        self.assertEqual(BeforedelMetadata, type(self.append_metadata_mock.call_args[0][1]))
+        self.assertEqual(BeforeDelMetadata, type(self.append_metadata_mock.call_args[0][1]))
         self.assertEqual(beforedel, type(marker))
         self.assertIs(test_function, wrapped_test_function)
 
@@ -48,7 +48,7 @@ class TestBeforedel(TestCase):
 
         # assert
         self.append_metadata_mock.assert_called_once_with(test_function, ANY)
-        self.assertEqual(BeforedelMetadata, type(self.append_metadata_mock.call_args[0][1]))
+        self.assertEqual(BeforeDelMetadata, type(self.append_metadata_mock.call_args[0][1]))
         self.assertIs(test_function, wrapped_test_function)
 
     def test_invalid_decoration(self):

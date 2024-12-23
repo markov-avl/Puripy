@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from puripy.context.metadata import AfterinitMetadata
+from puripy.context.metadata import AfterInitMetadata
 
 
 class TestAfterinitMetadata(TestCase):
@@ -11,8 +11,8 @@ class TestAfterinitMetadata(TestCase):
         """
 
         # act
-        first = AfterinitMetadata()
-        second = AfterinitMetadata()
+        first = AfterInitMetadata()
+        second = AfterInitMetadata()
 
         # assert
         self.assertNotEqual(first, second)
@@ -23,8 +23,8 @@ class TestAfterinitMetadata(TestCase):
         """
 
         # act
-        first = AfterinitMetadata.instance()
-        second = AfterinitMetadata.instance()
+        first = AfterInitMetadata.instance()
+        second = AfterInitMetadata.instance()
 
         # assert
         self.assertEqual(first, second)
@@ -35,9 +35,9 @@ class TestAfterinitMetadata(TestCase):
         """
 
         # act
-        instanced = AfterinitMetadata.instance()
-        constructed_first = AfterinitMetadata()
-        constructed_second = AfterinitMetadata()
+        instanced = AfterInitMetadata.instance()
+        constructed_first = AfterInitMetadata()
+        constructed_second = AfterInitMetadata()
 
         # assert
         self.assertNotEqual(instanced, constructed_first)
@@ -51,8 +51,8 @@ class TestAfterinitMetadata(TestCase):
         """
 
         # act
-        constructed = AfterinitMetadata()
-        instanced = AfterinitMetadata.instance()
+        constructed = AfterInitMetadata()
+        instanced = AfterInitMetadata.instance()
 
         # assert
         self.assertEqual(constructed, instanced)

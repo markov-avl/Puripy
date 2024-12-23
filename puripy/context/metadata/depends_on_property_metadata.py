@@ -5,7 +5,7 @@ from .metadata import Metadata
 
 
 @dataclass
-class DependsonpropertyMetadata(Metadata):
+class DependsOnPropertyMetadata(Metadata):
     key: str
     value: Any
     match_on_missing: bool
