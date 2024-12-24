@@ -5,8 +5,8 @@ from unittest import TestCase
 from unittest.mock import patch
 
 from puripy.context.decorator import DecoratableType
-from puripy.marker import particle
 from puripy.context.metadata import ParticleMetadata
+from puripy.marker import particle
 
 
 class TestParticle(TestCase):
@@ -101,7 +101,7 @@ class TestParticle(TestCase):
         # act & assert
         self.assertRaisesRegex(RuntimeError, exception_message_regex, lambda: particle()(test_class))
 
-    def test_as_class_and_function_decorator(self):
+    def test_as_class_function_method_decorator(self):
         # arrange
         test_class = type("TestClass", (), {})
 
@@ -111,5 +111,5 @@ class TestParticle(TestCase):
         # assert
         self.is_valid_decoratable_mock.assert_called_once_with(
             test_class,
-            [DecoratableType.CLASS, DecoratableType.FUNCTION]
+            [DecoratableType.CLASS, DecoratableType.FUNCTION, DecoratableType.METHOD]
         )

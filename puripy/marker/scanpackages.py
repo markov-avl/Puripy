@@ -11,7 +11,7 @@ from .marker import Marker
 @final
 class scanpackages[T: type](Marker):
 
-    def __init__(self, /, include: str | set[str] = None, exclude: str | set[str] = None):
+    def __init__(self, /, include: str | Iterable[str] = None, exclude: str | Iterable[str] = None):
         super().__init__([DecoratableType.CLASS])
         self.__include = self.__to_set(include)
         self.__exclude = self.__to_set(exclude)
