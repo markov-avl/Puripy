@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from puripy.context.metadata import (AfterinitMetadata,
-                                     BeforedelMetadata,
+from puripy.context.metadata import (AfterInitMetadata,
+                                     BeforeDelMetadata,
                                      FactoryMetadata,
                                      ParticleMetadata,
                                      PropertiesMetadata)
@@ -28,7 +28,7 @@ class TestMetadataUtils(TestCase):
 
         # arrange
         obj = type("TestClass", (), {})
-        metadata = AfterinitMetadata()
+        metadata = AfterInitMetadata()
 
         # act
         append_metadata(obj, metadata)
@@ -44,8 +44,8 @@ class TestMetadataUtils(TestCase):
 
         # arrange
         obj = type("TestClass", (), {})
-        metadata1 = AfterinitMetadata()
-        metadata2 = BeforedelMetadata()
+        metadata1 = AfterInitMetadata()
+        metadata2 = BeforeDelMetadata()
 
         # act
         append_metadata(obj, metadata1)
@@ -61,8 +61,8 @@ class TestMetadataUtils(TestCase):
 
         # arrange
         obj = type("TestClass", (), {})
-        metadata1 = AfterinitMetadata()
-        metadata2 = BeforedelMetadata()
+        metadata1 = AfterInitMetadata()
+        metadata2 = BeforeDelMetadata()
         setattr(obj, ATTRIBUTE_NAME, [metadata1, metadata2])
 
         # act
@@ -94,12 +94,12 @@ class TestMetadataUtils(TestCase):
 
         # arrange
         obj = type("TestClass", (), {})
-        metadata1 = AfterinitMetadata()
-        metadata2 = BeforedelMetadata()
+        metadata1 = AfterInitMetadata()
+        metadata2 = BeforeDelMetadata()
         setattr(obj, ATTRIBUTE_NAME, [metadata1, metadata2])
 
         # act
-        result = find_metadata_of_type(obj, AfterinitMetadata)
+        result = find_metadata_of_type(obj, AfterInitMetadata)
 
         # assert
         self.assertEqual(result, [metadata1])
@@ -114,7 +114,7 @@ class TestMetadataUtils(TestCase):
         obj = type("TestClass", (), {})
 
         # act
-        result = find_metadata_of_type(obj, AfterinitMetadata)
+        result = find_metadata_of_type(obj, AfterInitMetadata)
 
         # assert
         self.assertEqual(result, [])
@@ -127,11 +127,11 @@ class TestMetadataUtils(TestCase):
 
         # arrange
         obj = type("TestClass", (), {})
-        metadata = AfterinitMetadata()
+        metadata = AfterInitMetadata()
         setattr(obj, ATTRIBUTE_NAME, [metadata])
 
         # act
-        result = get_exactly_one_metadata_of_type(obj, AfterinitMetadata)
+        result = get_exactly_one_metadata_of_type(obj, AfterInitMetadata)
 
         # assert
         self.assertEqual(result, metadata)
@@ -147,7 +147,7 @@ class TestMetadataUtils(TestCase):
 
         # act & assert
         with self.assertRaises(ValueError):
-            get_exactly_one_metadata_of_type(obj, AfterinitMetadata)
+            get_exactly_one_metadata_of_type(obj, AfterInitMetadata)
 
     def test_get_exactly_one_metadata_of_type_3(self):
         """
@@ -157,11 +157,11 @@ class TestMetadataUtils(TestCase):
 
         # arrange
         obj = type("TestClass", (), {})
-        setattr(obj, ATTRIBUTE_NAME, [AfterinitMetadata()])
+        setattr(obj, ATTRIBUTE_NAME, [AfterInitMetadata()])
 
         # act & assert
         with self.assertRaises(ValueError):
-            get_exactly_one_metadata_of_type(obj, BeforedelMetadata)
+            get_exactly_one_metadata_of_type(obj, BeforeDelMetadata)
 
     def test_get_exactly_one_metadata_of_type_4(self):
         """
@@ -171,11 +171,11 @@ class TestMetadataUtils(TestCase):
 
         # arrange
         obj = type("TestClass", (), {})
-        setattr(obj, ATTRIBUTE_NAME, [AfterinitMetadata(), AfterinitMetadata()])
+        setattr(obj, ATTRIBUTE_NAME, [AfterInitMetadata(), AfterInitMetadata()])
 
         # act & assert
         with self.assertRaises(ValueError):
-            get_exactly_one_metadata_of_type(obj, AfterinitMetadata)
+            get_exactly_one_metadata_of_type(obj, AfterInitMetadata)
 
     def test_has_metadata_of_type_1(self):
         """
@@ -185,10 +185,10 @@ class TestMetadataUtils(TestCase):
 
         # arrange
         obj = type("TestClass", (), {})
-        setattr(obj, ATTRIBUTE_NAME, [AfterinitMetadata()])
+        setattr(obj, ATTRIBUTE_NAME, [AfterInitMetadata()])
 
         # act
-        result = has_metadata_of_type(obj, AfterinitMetadata)
+        result = has_metadata_of_type(obj, AfterInitMetadata)
 
         # assert
         self.assertTrue(result)
@@ -201,10 +201,10 @@ class TestMetadataUtils(TestCase):
 
         # arrange
         obj = type("TestClass", (), {})
-        setattr(obj, ATTRIBUTE_NAME, [AfterinitMetadata()])
+        setattr(obj, ATTRIBUTE_NAME, [AfterInitMetadata()])
 
         # act
-        result = has_metadata_of_type(obj, BeforedelMetadata)
+        result = has_metadata_of_type(obj, BeforeDelMetadata)
 
         # assert
         self.assertFalse(result)
@@ -219,7 +219,7 @@ class TestMetadataUtils(TestCase):
         obj = type("TestClass", (), {})
 
         # act
-        result = has_metadata_of_type(obj, AfterinitMetadata)
+        result = has_metadata_of_type(obj, AfterInitMetadata)
 
         # assert
         self.assertFalse(result)
@@ -233,8 +233,8 @@ class TestMetadataUtils(TestCase):
 
         # arrange
         test_cases = {
-            (AfterinitMetadata, ()): [is_afterinit],
-            (BeforedelMetadata, ()): [is_beforedel],
+            (AfterInitMetadata, ()): [is_afterinit],
+            (BeforeDelMetadata, ()): [is_beforedel],
             (FactoryMetadata, ()): [is_factory],
             (ParticleMetadata, ("",)): [is_particle, is_containerized],
             (PropertiesMetadata, ("", "", "")): [is_properties, is_containerized]
@@ -291,8 +291,8 @@ class TestMetadataUtils(TestCase):
         # arrange
         obj = type("TestClass", (), {})
         metadata = [
-            AfterinitMetadata(),
-            BeforedelMetadata(),
+            AfterInitMetadata(),
+            BeforeDelMetadata(),
             FactoryMetadata(),
             ParticleMetadata(name=""),
             PropertiesMetadata(name="", path="", prefix="")

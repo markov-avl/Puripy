@@ -2,7 +2,7 @@ from types import FunctionType, MethodType
 from typing import final, override, Any
 
 from puripy.context.decorator import DecoratableType
-from puripy.context.metadata import DependsonpropertyMetadata
+from puripy.context.metadata import DependsOnPropertyMetadata
 
 from .marker import Marker
 
@@ -19,8 +19,8 @@ class dependsonproperty[T: type | FunctionType | MethodType](Marker):
         self.__path = path
 
     @override
-    def _to_metadata(self) -> DependsonpropertyMetadata:
-        return DependsonpropertyMetadata(
+    def _to_metadata(self) -> DependsOnPropertyMetadata:
+        return DependsOnPropertyMetadata(
             key=self.__key,
             value=self.__value,
             match_on_missing=self.__match_on_missing,

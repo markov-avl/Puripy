@@ -2,7 +2,7 @@ from types import FunctionType
 from typing import final, override
 
 from puripy.context.decorator import DecoratableType
-from puripy.context.metadata import AfterinitMetadata
+from puripy.context.metadata import AfterInitMetadata
 
 from .marker import Marker
 
@@ -16,5 +16,5 @@ class afterinit[T: FunctionType](Marker):
         super().__init__([DecoratableType.FUNCTION])
 
     @override
-    def _to_metadata(self) -> AfterinitMetadata:
-        return AfterinitMetadata.instance()
+    def _to_metadata(self) -> AfterInitMetadata:
+        return AfterInitMetadata.instance()

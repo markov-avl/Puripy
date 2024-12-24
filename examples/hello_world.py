@@ -1,8 +1,10 @@
 from typing import override
 
 from puripy import PuripyApplication, PuripyApplicationRunner
+from puripy.marker import scanpackages
 
 
+@scanpackages(include="package.to.include", exclude={"package.to.exclude"})
 class App(PuripyApplication):
 
     @override

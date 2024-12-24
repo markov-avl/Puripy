@@ -1,8 +1,8 @@
 from typing import Any
 
 from puripy.context.metadata import (Metadata,
-                                     AfterinitMetadata,
-                                     BeforedelMetadata,
+                                     AfterInitMetadata,
+                                     BeforeDelMetadata,
                                      FactoryMetadata,
                                      ParticleMetadata,
                                      PropertiesMetadata,
@@ -38,11 +38,11 @@ def has_metadata_of_type[M: Metadata](obj: Any, metadata_type: type[M]) -> bool:
 
 
 def is_afterinit(obj: Any) -> bool:
-    return has_metadata_of_type(obj, AfterinitMetadata)
+    return has_metadata_of_type(obj, AfterInitMetadata)
 
 
 def is_beforedel(obj: Any) -> bool:
-    return has_metadata_of_type(obj, BeforedelMetadata)
+    return has_metadata_of_type(obj, BeforeDelMetadata)
 
 
 def is_factory(obj: Any) -> bool:

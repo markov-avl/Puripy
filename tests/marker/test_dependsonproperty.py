@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 from puripy.context.decorator import DecoratableType
 from puripy.marker import dependsonproperty
-from puripy.context.metadata import DependsonpropertyMetadata
+from puripy.context.metadata import DependsOnPropertyMetadata
 
 
 class TestDependsonproperty(TestCase):
@@ -28,7 +28,7 @@ class TestDependsonproperty(TestCase):
     def test_only_mandatory_args(self):
         # arrange
         test_class = type("TestClass", (), {})
-        metadata = DependsonpropertyMetadata(key="key", value="value", match_on_missing=False, path="")
+        metadata = DependsOnPropertyMetadata(key="key", value="value", match_on_missing=False, path="")
 
         # act
         decorated_test_class = dependsonproperty(key="key", value="value")(test_class)
@@ -50,7 +50,7 @@ class TestDependsonproperty(TestCase):
     def test_kw_args_decoration(self):
         # arrange
         test_class = type("TestClass", (), {})
-        metadata = DependsonpropertyMetadata(key="key", value="value", match_on_missing=True, path="path")
+        metadata = DependsOnPropertyMetadata(key="key", value="value", match_on_missing=True, path="path")
 
         # act
         decorator = dependsonproperty(key="key", value="value", match_on_missing=True, path="path")

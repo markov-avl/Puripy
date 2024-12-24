@@ -8,7 +8,7 @@ from puripy.utils.property_utils import get_property_file_path
 from .annotation.comparator import AnnotationComparator
 from .container import Container
 from .dependency import ParameterDependency
-from .metadata import DependsonpropertyMetadata
+from .metadata import DependsOnPropertyMetadata
 from .property import PropertySourceReader
 from .registrar import Registrar
 from .registration import (ContainerizedRegistration,
@@ -70,7 +70,7 @@ class Builder:
 
     # FIXME: definitely not the builder's area of responsibility
     def __are_conditions_met(self, registration: Registration) -> bool:
-        depends_on_property = find_metadata_of_type(registration.constructor, DependsonpropertyMetadata)
+        depends_on_property = find_metadata_of_type(registration.constructor, DependsOnPropertyMetadata)
         for condition in depends_on_property:
             source = condition.path if condition.path else get_property_file_path().name
             value = self.__get_property_by_key(source, condition.key)

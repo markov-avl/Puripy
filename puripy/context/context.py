@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from copyreg import constructor
-
 from puripy.utils.containerized_utils import get_name
 from puripy.utils.metadata_utils import is_particle, is_properties, get_exactly_one_metadata_of_type
 from puripy.utils.reflection_utils import return_type_of
@@ -24,7 +22,6 @@ class Context:
         self.__registrar = Registrar()
         self.__dependency_resolver = DependencyResolver()
         self.__assembler = Assembler(self.__container, self.__registrar)
-        self.__scanning_packages_resolver = ScanningPackagesResolver()
 
     @property
     def container(self) -> Container:
@@ -42,8 +39,8 @@ class Context:
             name=get_name(application_type)
         )
 
-        scanning_packages = self.__scanning_packages_resolver.get_packages(application_type)
-        self.__register_all_from_packages(scanning_packages)
+        packages_to_include, packages_to_exclude = ScanningPackagesResolver.of(application_type)
+        self.__register_all_from_packages(packages_to_include, packages_to_exclude)
         self.__assembler.assemble()
 
         post_processor = PostProcessor(self.__container)
@@ -55,8 +52,8 @@ class Context:
         pre_processor = PreProcessor(self.__container)
         pre_processor.process_before_dels()
 
-    def __register_all_from_packages(self, packages: set[str]) -> None:
-        for factory in find_factories(packages):
+    def __register_all_from_packages(self, packages_to_include: set[str], packages_to_exclude: set[str]) -> None:
+        for factory in find_factories(packages_to_include, packages_to_exclude):
             self.__registrar.register_temporary(
                 constructor=factory,
                 dependencies=self.__dependency_resolver.get_dependencies(factory),
@@ -74,7 +71,7 @@ class Context:
                         name=get_name(member, metadata.name)
                     )
 
-        for containerized in find_containerized(packages):
+        for containerized in find_containerized(packages_to_include, packages_to_exclude):
             return_type = return_type_of(containerized)
             if is_particle(containerized):
                 metadata = get_exactly_one_metadata_of_type(containerized, ParticleMetadata)
