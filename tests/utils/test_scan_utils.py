@@ -42,6 +42,17 @@ class TestScanUtils(TestCase):
         # assert
         self.assertSetEqual(result, {PropertyParser, JsonPropertyParser, YamlPropertyParser})
 
+    def test_find_objects_2(self):
+        """
+        Tests that the ``find_objects`` function returns an empty set when filters exclude all objects.
+        """
+
+        # act
+        result = find_objects(lambda m: False, lambda obj: True)
+
+        # assert
+        self.assertSetEqual(result, set())
+
     def test_find_objects_in_packages_1(self):
         """
         Tests that the ``find_objects_in_packages`` function returns objects from specific packages.
@@ -59,7 +70,18 @@ class TestScanUtils(TestCase):
 
     def test_find_objects_in_packages_2(self):
         """
-        Tests that the ``find_objects_in_packages`` function returns an empty set when packages are empty.
+        Tests that the ``find_objects_in_packages`` function excludes objects from specific packages.
+        """
+
+        # act
+        result = find_objects_in_packages(lambda obj: True, {"puripy.context.property"}, {"puripy.context.property"})
+
+        # assert
+        self.assertSetEqual(result, set())
+
+    def test_find_objects_in_packages_3(self):
+        """
+        Tests that the ``find_objects_in_packages`` function returns an empty set when no packages are included.
         """
 
         # act
@@ -68,7 +90,7 @@ class TestScanUtils(TestCase):
         # assert
         self.assertSetEqual(result, set())
 
-    def test_find_objects_in_packages_3(self):
+    def test_find_objects_in_packages_4(self):
         """
         Tests that the ``find_objects_in_packages`` function checks all modules when no packages are provided.
         """
@@ -139,6 +161,21 @@ class TestScanUtils(TestCase):
         # arrange
         module_name = "package3.subpackage.module"
         packages = {"package1", "package2"}
+
+        # act
+        result = is_defined_in_any(module_name, packages)
+
+        # assert
+        self.assertFalse(result)
+
+    def test_is_defined_in_any_3(self):
+        """
+        Tests that the ``is_defined_in_any`` function returns ``False`` when the packages set is empty.
+        """
+
+        # arrange
+        module_name = "package3.subpackage.module"
+        packages = set()
 
         # act
         result = is_defined_in_any(module_name, packages)
